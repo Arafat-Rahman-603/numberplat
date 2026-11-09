@@ -77,19 +77,19 @@ export default function HeroSection({
               </div>
             </div>
 
-            <div className="flex items-center gap-4 pt-2 text-xs text-neutral-400">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-4 pt-2 text-xs text-neutral-400">
               <span className="flex items-center gap-1">
-                <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
                 সারাদেশে ক্যাশ অন ডেলিভারি
               </span>
-              <span>•</span>
+              <span className="hidden sm:inline">•</span>
               <span>দ্রুততম কুরিয়ার হোম ডেলিভারি</span>
             </div>
           </div>
 
           {/* Right Column: Hero Visual Product Display */}
           <div className="lg:col-span-5 flex flex-col items-center justify-center">
-            <div className="w-full max-w-lg bg-neutral-900/90 border border-neutral-800 rounded-3xl p-5 sm:p-7 shadow-2xl relative">
+            <div className="w-full max-w-lg bg-neutral-900/90 border border-neutral-800 rounded-2xl sm:rounded-3xl p-3.5 sm:p-7 shadow-2xl relative overflow-hidden">
               {/* Product Badge */}
               <div className="flex items-center justify-between mb-4">
                 <span className="text-xs font-bold text-amber-400 uppercase tracking-widest">

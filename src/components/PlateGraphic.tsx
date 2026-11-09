@@ -89,88 +89,77 @@ export default function PlateGraphic({
           <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/15 to-transparent pointer-events-none transform -skew-x-12" />
 
           {/* Plate Text Rendering */}
-          {isScooter ? (
-            /* 2-Line Layout for Scooter (200 x 100 mm) */
-            <div className="flex flex-col items-center justify-center text-center z-10 leading-tight">
-              <div
-                className={`${fontSizes} ${
-                  isBlackAcrylic ? "text-white" : "text-neutral-950"
-                } whitespace-nowrap`}
-              >
-                <span>{metroCity || "ঢাকা মেট্রো"}</span>
-                <span className="mx-1 text-neutral-400">-</span>
-                <span>{vehicleClass || "ল"}</span>
+          {(() => {
+            const isAllBlank =
+              (!metroCity || !metroCity.trim()) &&
+              (!vehicleClass || !vehicleClass.trim()) &&
+              (!seriesNumber || !seriesNumber.trim()) &&
+              (!plateNumber || !plateNumber.trim());
+
+            const city = isAllBlank ? "ঢাকা মেট্রো" : (metroCity?.trim() ?? "");
+            const vClass = isAllBlank ? "ল" : (vehicleClass?.trim() ?? "");
+            const sNum = isAllBlank ? "১২" : (seriesNumber?.trim() ?? "");
+            const pNum = isAllBlank ? "৩৪৫৬" : (plateNumber?.trim() ?? "");
+
+            if (isScooter) {
+              const line1 = [city, vClass].filter(Boolean).join(" - ");
+              const line2 = [sNum, pNum].filter(Boolean).join(" - ");
+
+              return (
+                <div className="flex flex-col items-center justify-center text-center z-10 leading-tight">
+                  <div
+                    className={`${fontSizes} ${
+                      isBlackAcrylic ? "text-white" : "text-neutral-950"
+                    } whitespace-nowrap`}
+                  >
+                    {line1 || "ঢাকা মেট্রো - ল"}
+                  </div>
+                  {(line2 || isAllBlank) && (
+                    <div
+                      className={`${fontSizes} font-mono ${
+                        isBlackAcrylic ? "text-white" : "text-neutral-950"
+                      } whitespace-nowrap mt-0.5`}
+                    >
+                      {line2 || "১২ - ৩৪৫৬"}
+                    </div>
+                  )}
+                </div>
+              );
+            }
+
+            // Single-Line Layout for Motorcycle (285 x 50 mm)
+            const segments = [
+              { text: city, isNumber: false },
+              { text: vClass, isNumber: false },
+              { text: sNum, isNumber: true },
+              { text: pNum, isNumber: true },
+            ].filter((s) => s.text.length > 0);
+
+            return (
+              <div className="flex items-center justify-center whitespace-nowrap text-nowrap flex-nowrap z-10 gap-1 sm:gap-2 font-bold">
+                {segments.map((seg, idx) => (
+                  <React.Fragment key={idx}>
+                    {idx > 0 && (
+                      <span
+                        className={`font-bold ${
+                          isBlackAcrylic ? "text-neutral-400" : "text-neutral-700"
+                        }`}
+                      >
+                        -
+                      </span>
+                    )}
+                    <span
+                      className={`${fontSizes} ${
+                        seg.isNumber ? "font-mono" : ""
+                      } ${isBlackAcrylic ? "text-white" : "text-neutral-950"}`}
+                    >
+                      {seg.text}
+                    </span>
+                  </React.Fragment>
+                ))}
               </div>
-              <div
-                className={`${fontSizes} font-mono ${
-                  isBlackAcrylic ? "text-white" : "text-neutral-950"
-                } whitespace-nowrap mt-0.5`}
-              >
-                <span>{seriesNumber || "১২"}</span>
-                <span className="mx-1 text-neutral-400">-</span>
-                <span>{plateNumber || "৩৪৫৬"}</span>
-              </div>
-            </div>
-          ) : (
-            /* Single-Line Layout for Motorcycle (285 x 50 mm) */
-            <div className="flex items-center justify-center whitespace-nowrap text-nowrap flex-nowrap z-10 gap-1 sm:gap-2 font-bold">
-              <span
-                className={`${fontSizes} ${
-                  isBlackAcrylic ? "text-white" : "text-neutral-950"
-                }`}
-              >
-                {metroCity || "ঢাকা মেট্রো"}
-              </span>
-
-              <span
-                className={`font-bold ${
-                  isBlackAcrylic ? "text-neutral-400" : "text-neutral-700"
-                }`}
-              >
-                -
-              </span>
-
-              <span
-                className={`${fontSizes} ${
-                  isBlackAcrylic ? "text-white" : "text-neutral-950"
-                }`}
-              >
-                {vehicleClass || "ল"}
-              </span>
-
-              <span
-                className={`font-bold ${
-                  isBlackAcrylic ? "text-neutral-400" : "text-neutral-700"
-                }`}
-              >
-                -
-              </span>
-
-              <span
-                className={`${fontSizes} font-mono ${
-                  isBlackAcrylic ? "text-white" : "text-neutral-950"
-                }`}
-              >
-                {seriesNumber || "১২"}
-              </span>
-
-              <span
-                className={`font-bold ${
-                  isBlackAcrylic ? "text-neutral-400" : "text-neutral-700"
-                }`}
-              >
-                -
-              </span>
-
-              <span
-                className={`${fontSizes} font-mono ${
-                  isBlackAcrylic ? "text-white" : "text-neutral-950"
-                }`}
-              >
-                {plateNumber || "৩৪৫৬"}
-              </span>
-            </div>
-          )}
+            );
+          })()}
 
           {/* Micro BRTA Watermark */}
           <div

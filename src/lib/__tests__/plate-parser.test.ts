@@ -30,5 +30,21 @@ describe("Smart Plate Parser Unit Tests", () => {
     expect(result.seriesNumber).toBe("১২");
     expect(result.plateNumber).toBe("৩৪৫৬");
   });
+
+  it("parses vehicle class 'থ' (Tho) properly", () => {
+    const result = parseQuickPlateString("ঢাকা মেট্রো থ ১২ ৩৪৫৬");
+    expect(result.metroCity).toBe("ঢাকা মেট্রো");
+    expect(result.vehicleClass).toBe("থ");
+    expect(result.seriesNumber).toBe("১২");
+    expect(result.plateNumber).toBe("৩৪৫৬");
+  });
+
+  it("parses English 'Th' class properly", () => {
+    const result = parseQuickPlateString("Dhaka Metro Th 15 7890");
+    expect(result.metroCity).toBe("ঢাকা মেট্রো");
+    expect(result.vehicleClass).toBe("থ");
+    expect(result.seriesNumber).toBe("১৫");
+    expect(result.plateNumber).toBe("৭৮৯০");
+  });
 });
 

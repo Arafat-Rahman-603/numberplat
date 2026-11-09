@@ -50,7 +50,7 @@ export default function SpecificationsSection() {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Left Table: Specifications */}
-          <div className="lg:col-span-6 bg-white rounded-3xl p-6 sm:p-8 border border-neutral-200 shadow-sm">
+          <div className="lg:col-span-6 bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 border border-neutral-200 shadow-sm">
             <h3 className="font-bold text-lg text-neutral-900 mb-6 flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
               টেকনিক্যাল স্পেসিফিকেশন

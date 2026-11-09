@@ -10,7 +10,10 @@ export default function StickyMobileBar({
   onOrderClick: () => void;
 }) {
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-40 lg:hidden bg-neutral-950/95 backdrop-blur-md border-t border-neutral-800 p-3 px-4 shadow-[0_-4px_20px_rgba(0,0,0,0.5)]">
+    <div
+      style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
+      className="fixed bottom-0 left-0 right-0 z-40 lg:hidden bg-neutral-950/95 backdrop-blur-md border-t border-neutral-800 p-3 px-4 shadow-[0_-4px_20px_rgba(0,0,0,0.5)]"
+    >
       <div className="flex items-center justify-between gap-3">
         <div className="flex flex-col">
           <div className="flex items-baseline gap-1.5">

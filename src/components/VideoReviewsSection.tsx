@@ -59,7 +59,7 @@ export default function VideoReviewsSection() {
         </div>
 
         {/* 3 Reel Style Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 max-w-sm sm:max-w-none mx-auto">
           {reels.map((reel) => (
             <div
               key={reel.id}

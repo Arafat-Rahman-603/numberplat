@@ -31,14 +31,14 @@ export default function DarkQuoteBanner({
               রাস্তায় আপনার বাইক থাকবে সবার চেয়ে আলাদা ও দৃষ্টিনন্দন। টেকসই রিফ্লেক্টিভ ম্যাটেরিয়াল নাইট রাইডকে করবে নিরাপদ ও আকর্ষণীয়।
             </p>
 
-            <div className="flex items-center gap-3 pt-2 text-xs text-neutral-300">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3 pt-2 text-xs text-neutral-300">
               <span className="flex items-center gap-1.5">
-                <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
                 ১০০% স্যাটিসফ্যাকশন গ্যারান্টি
               </span>
-              <span>•</span>
+              <span className="hidden sm:inline">•</span>
               <span className="flex items-center gap-1.5">
-                <CreditCard className="w-4 h-4 text-amber-400" />
+                <CreditCard className="w-4 h-4 text-amber-400 shrink-0" />
                 ক্যাশ অন ডেলিভারি সুবিধা
               </span>
             </div>

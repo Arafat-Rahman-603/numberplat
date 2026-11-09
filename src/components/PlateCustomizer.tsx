@@ -12,59 +12,7 @@ interface PlateCustomizerProps {
   onProceedToOrder: () => void;
 }
 
-const METRO_CITIES = [
-  "ঢাকা মেট্রো",
-  "চট্টগ্রাম মেট্রো",
-  "সিলেট মেট্রো",
-  "রাজশাহী মেট্রো",
-  "খুলনা মেট্রো",
-  "বরিশাল মেট্রো",
-  "রংপুর মেট্রো",
-  "ময়মনসিংহ মেট্রো",
-  "গাজীপুর",
-  "নারায়ণগঞ্জ",
-  "কুমিল্লা",
-  "যশোর",
-  "বগুড়া",
-  "পাবনা",
-  "টাঙ্গাইল",
-  "ফরিদপুর",
-  "কুষ্টিয়া",
-  "নোয়াখালী",
-  "দিনাজপুর",
-  "কক্সবাজার",
-];
 
-const VEHICLE_CLASSES = [
-  "ল",
-  "হ",
-  "ক",
-  "খ",
-  "গ",
-  "ঘ",
-  "চ",
-  "ছ",
-  "জ",
-  "ঝ",
-  "ট",
-  "ঠ",
-  "ড",
-  "ঢ",
-  "ত",
-  "থ",
-  "দ",
-  "ধ",
-  "ন",
-  "প",
-  "ফ",
-  "ব",
-  "ভ",
-  "ম",
-  "য",
-  "র",
-  "শ",
-  "স",
-];
 
 export default function PlateCustomizer({
   customDetails,
@@ -81,7 +29,13 @@ export default function PlateCustomizer({
       ...customDetails,
       [field]: value,
     };
-    updated.fullPlateText = `${updated.metroCity}-${updated.vehicleClass}-${updated.seriesNumber}-${updated.plateNumber}`;
+    const parts = [
+      updated.metroCity?.trim(),
+      updated.vehicleClass?.trim(),
+      updated.seriesNumber?.trim(),
+      updated.plateNumber?.trim(),
+    ].filter(Boolean);
+    updated.fullPlateText = parts.join("-");
     onChange(updated);
   };
 
@@ -126,20 +80,20 @@ export default function PlateCustomizer({
                 প্লেটের ধরন
               </label>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
                 {/* Option 1: Motorcycle (285 x 50 mm) */}
                 <div
                   onClick={() => handleUpdate("vehicleType", "motorcycle")}
-                  className={`p-4 rounded-xl border-2 cursor-pointer transition relative flex flex-col items-center justify-between text-center min-h-[145px] ${
+                  className={`p-2.5 sm:p-4 rounded-xl border-2 cursor-pointer transition relative flex flex-col items-center justify-between text-center min-h-[135px] sm:min-h-[145px] ${
                     vehicleType === "motorcycle"
                       ? "bg-[#FFFDF7] border-neutral-900 shadow-sm"
                       : "bg-white border-neutral-200 hover:border-neutral-300"
                   }`}
                 >
                   {/* Top Right Radio Indicator */}
-                  <div className="absolute top-2.5 right-2.5">
+                  <div className="absolute top-2 right-2 sm:top-2.5 sm:right-2.5">
                     <div
-                      className={`w-4 h-4 rounded-full border flex items-center justify-center ${
+                      className={`w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full border flex items-center justify-center ${
                         vehicleType === "motorcycle"
                           ? "border-neutral-900 bg-neutral-900"
                           : "border-neutral-400 bg-white"
@@ -152,16 +106,16 @@ export default function PlateCustomizer({
                   </div>
 
                   {/* Mini Preview Graphic */}
-                  <div className="w-full max-w-[140px] h-6 bg-white border border-neutral-800 rounded px-1.5 flex items-center justify-center text-[9px] font-bold text-neutral-900 whitespace-nowrap mt-1">
+                  <div className="w-full max-w-[130px] h-6 bg-white border border-neutral-800 rounded px-1 flex items-center justify-center text-[8px] min-[380px]:text-[9px] font-bold text-neutral-900 whitespace-nowrap mt-1">
                     ঢাকা-ল-১২-৩৪৫৬
                   </div>
 
                   {/* Title & Specs */}
-                  <div className="mt-3">
-                    <span className="font-extrabold text-sm text-neutral-900 block">
+                  <div className="mt-2.5 sm:mt-3">
+                    <span className="font-extrabold text-xs sm:text-sm text-neutral-900 block">
                       মোটরসাইকেল
                     </span>
-                    <span className="text-[11px] text-neutral-500 font-mono">
+                    <span className="text-[10px] sm:text-[11px] text-neutral-500 font-mono">
                       285 × 50 mm
                     </span>
                   </div>
@@ -170,16 +124,16 @@ export default function PlateCustomizer({
                 {/* Option 2: Scooter (200 x 100 mm) */}
                 <div
                   onClick={() => handleUpdate("vehicleType", "scooter")}
-                  className={`p-4 rounded-xl border-2 cursor-pointer transition relative flex flex-col items-center justify-between text-center min-h-[145px] ${
+                  className={`p-2.5 sm:p-4 rounded-xl border-2 cursor-pointer transition relative flex flex-col items-center justify-between text-center min-h-[135px] sm:min-h-[145px] ${
                     vehicleType === "scooter"
                       ? "bg-[#FFFDF7] border-neutral-900 shadow-sm"
                       : "bg-white border-neutral-200 hover:border-neutral-300"
                   }`}
                 >
                   {/* Top Right Radio Indicator */}
-                  <div className="absolute top-2.5 right-2.5">
+                  <div className="absolute top-2 right-2 sm:top-2.5 sm:right-2.5">
                     <div
-                      className={`w-4 h-4 rounded-full border flex items-center justify-center ${
+                      className={`w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full border flex items-center justify-center ${
                         vehicleType === "scooter"
                           ? "border-neutral-900 bg-neutral-900"
                           : "border-neutral-400 bg-white"
@@ -192,20 +146,20 @@ export default function PlateCustomizer({
                   </div>
 
                   {/* Mini Preview Graphic for Scooter (Squarish 2 lines) */}
-                  <div className="w-12 h-9 bg-white border border-neutral-800 rounded px-1 flex flex-col items-center justify-center text-[7px] font-bold text-neutral-900 leading-tight mt-1">
+                  <div className="w-11 sm:w-12 h-8 sm:h-9 bg-white border border-neutral-800 rounded px-1 flex flex-col items-center justify-center text-[6.5px] sm:text-[7px] font-bold text-neutral-900 leading-tight mt-1">
                     <span>ঢাকা-ল</span>
                     <span>১২-৩৪৫৬</span>
                   </div>
 
                   {/* Title & Specs */}
                   <div className="mt-2">
-                    <span className="font-extrabold text-sm text-neutral-900 block">
+                    <span className="font-extrabold text-xs sm:text-sm text-neutral-900 block">
                       স্কুটার
                     </span>
-                    <span className="text-[11px] text-neutral-500 font-mono">
+                    <span className="text-[10px] sm:text-[11px] text-neutral-500 font-mono">
                       200 × 100 mm
                     </span>
-                    <span className="inline-block text-[9px] font-bold bg-neutral-900 text-white px-2 py-0.5 rounded-full mt-1">
+                    <span className="inline-block text-[8px] sm:text-[9px] font-bold bg-neutral-900 text-white px-2 py-0.5 rounded-full mt-0.5 sm:mt-1">
                       +৳৫০
                     </span>
                   </div>
@@ -245,50 +199,42 @@ export default function PlateCustomizer({
               )}
             </div>
 
-            {/* Individual Dropdown and Number Fields */}
+            {/* Individual Input Fields (User can type freely) */}
             <div className="pt-2 border-t border-neutral-100">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
-                {/* Metro City Dropdown */}
+              <div className="grid grid-cols-2 gap-2.5 sm:gap-3 mb-3">
+                {/* Metro City Input */}
                 <div>
-                  <label className="text-xs text-neutral-600 block mb-1 font-semibold">
+                  <label className="text-xs text-neutral-700 block mb-1 font-semibold">
                     মেট্রো / জেলা
                   </label>
-                  <select
+                  <input
+                    type="text"
                     value={customDetails.metroCity}
                     onChange={(e) => handleUpdate("metroCity", e.target.value)}
-                    className="w-full px-3 py-2 bg-neutral-50 border border-neutral-300 rounded-lg text-sm font-semibold text-neutral-900 focus:outline-none focus:border-amber-500 focus:bg-white"
-                  >
-                    {METRO_CITIES.map((c) => (
-                      <option key={c} value={c}>
-                        {c}
-                      </option>
-                    ))}
-                  </select>
+                    placeholder="ঢাকা মেট্রো"
+                    className="w-full px-2.5 sm:px-3 py-2 bg-neutral-50 border border-neutral-300 rounded-lg text-xs sm:text-sm font-semibold text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-amber-500 focus:bg-white transition"
+                  />
                 </div>
 
-                {/* Letter Class */}
+                {/* Letter Class Input */}
                 <div>
-                  <label className="text-xs text-neutral-600 block mb-1 font-semibold">
+                  <label className="text-xs text-neutral-700 block mb-1 font-semibold">
                     অক্ষর (ভেহিক্যাল ক্লাস)
                   </label>
-                  <select
+                  <input
+                    type="text"
                     value={customDetails.vehicleClass}
                     onChange={(e) => handleUpdate("vehicleClass", e.target.value)}
-                    className="w-full px-3 py-2 bg-neutral-50 border border-neutral-300 rounded-lg text-sm font-semibold text-neutral-900 focus:outline-none focus:border-amber-500 focus:bg-white"
-                  >
-                    {VEHICLE_CLASSES.map((l) => (
-                      <option key={l} value={l}>
-                        {l}
-                      </option>
-                    ))}
-                  </select>
+                    placeholder="ল বা থ"
+                    className="w-full px-2.5 sm:px-3 py-2 bg-neutral-50 border border-neutral-300 rounded-lg text-xs sm:text-sm font-semibold text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-amber-500 focus:bg-white transition"
+                  />
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
                 {/* Series Number */}
                 <div>
-                  <label className="text-xs text-neutral-600 block mb-1 font-semibold">
+                  <label className="text-xs text-neutral-700 block mb-1 font-semibold">
                     সিরিজ নম্বর
                   </label>
                   <input
@@ -296,13 +242,13 @@ export default function PlateCustomizer({
                     value={customDetails.seriesNumber}
                     onChange={(e) => handleUpdate("seriesNumber", e.target.value)}
                     placeholder="১২"
-                    className="w-full px-3 py-2 bg-neutral-50 border border-neutral-300 rounded-lg text-sm font-mono font-semibold text-neutral-900 focus:outline-none focus:border-amber-500 focus:bg-white"
+                    className="w-full px-2.5 sm:px-3 py-2 bg-neutral-50 border border-neutral-300 rounded-lg text-xs sm:text-sm font-mono font-semibold text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-amber-500 focus:bg-white transition"
                   />
                 </div>
 
                 {/* 4 Digit Plate Number */}
                 <div>
-                  <label className="text-xs text-neutral-600 block mb-1 font-semibold">
+                  <label className="text-xs text-neutral-700 block mb-1 font-semibold">
                     ৪ ডিজিটের নম্বর
                   </label>
                   <input
@@ -311,7 +257,7 @@ export default function PlateCustomizer({
                     value={customDetails.plateNumber}
                     onChange={(e) => handleUpdate("plateNumber", e.target.value)}
                     placeholder="৩৪৫৬"
-                    className="w-full px-3 py-2 bg-neutral-50 border border-neutral-300 rounded-lg text-sm font-mono font-semibold text-neutral-900 focus:outline-none focus:border-amber-500 focus:bg-white"
+                    className="w-full px-2.5 sm:px-3 py-2 bg-neutral-50 border border-neutral-300 rounded-lg text-xs sm:text-sm font-mono font-semibold text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-amber-500 focus:bg-white transition"
                   />
                 </div>
               </div>
@@ -390,7 +336,7 @@ export default function PlateCustomizer({
                   `,
                   backgroundSize: "22px 22px",
                 }}
-                className="w-full rounded-2xl p-3 sm:p-8 md:p-12 flex flex-col items-center justify-center relative min-h-[170px] sm:min-h-[220px] shadow-inner border border-neutral-800"
+                className="w-full rounded-2xl p-2 sm:p-8 md:p-12 flex flex-col items-center justify-center relative min-h-[160px] sm:min-h-[220px] shadow-inner border border-neutral-800 overflow-hidden"
               >
                 <PlateGraphic
                   metroCity={customDetails.metroCity}

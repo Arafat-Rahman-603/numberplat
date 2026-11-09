@@ -344,9 +344,9 @@ export default function CheckoutSection({
               </div>
 
               {/* Selected plate text confirmation */}
-              <div className="mt-4 p-3 bg-neutral-100 rounded-xl flex items-center justify-between text-xs">
+              <div className="mt-4 p-3 bg-neutral-100 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 text-xs">
                 <span className="text-neutral-600">প্লেটের খোদাইকৃত নম্বর:</span>
-                <span className="font-mono font-bold text-neutral-900 bg-white px-2.5 py-1 rounded border border-neutral-200">
+                <span className="font-mono font-bold text-neutral-900 bg-white px-2.5 py-1 rounded border border-neutral-200 break-all text-center sm:text-right">
                   {customDetails.fullPlateText}
                 </span>
               </div>
