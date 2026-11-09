@@ -38,6 +38,30 @@ export default function PlateCustomizer({
     onChange(updated);
   };
 
+  const handleInputChange = (val: string) => {
+    setQuickInput(val);
+    if (!val.trim()) return;
+
+    const parsed = parseQuickPlateString(val);
+    const updated = {
+      ...customDetails,
+      ...(parsed.metroCity && { metroCity: parsed.metroCity }),
+      ...(parsed.vehicleClass && { vehicleClass: parsed.vehicleClass }),
+      ...(parsed.seriesNumber && { seriesNumber: parsed.seriesNumber }),
+      ...(parsed.plateNumber && { plateNumber: parsed.plateNumber }),
+    };
+
+    const parts = [
+      updated.metroCity?.trim(),
+      updated.vehicleClass?.trim(),
+      updated.seriesNumber?.trim(),
+      updated.plateNumber?.trim(),
+    ].filter(Boolean);
+
+    updated.fullPlateText = parts.length > 0 ? parts.join("-") : val.trim();
+    onChange(updated);
+  };
+
   const handleQuickParse = () => {
     if (!quickInput.trim()) return;
     const parsed = parseQuickPlateString(quickInput);
@@ -50,10 +74,17 @@ export default function PlateCustomizer({
       ...(parsed.plateNumber && { plateNumber: parsed.plateNumber }),
     };
 
-    updated.fullPlateText = `${updated.metroCity}-${updated.vehicleClass}-${updated.seriesNumber}-${updated.plateNumber}`;
+    const parts = [
+      updated.metroCity?.trim(),
+      updated.vehicleClass?.trim(),
+      updated.seriesNumber?.trim(),
+      updated.plateNumber?.trim(),
+    ].filter(Boolean);
+
+    updated.fullPlateText = parts.length > 0 ? parts.join("-") : quickInput.trim();
     onChange(updated);
 
-    setQuickFeedback("নম্বর সফলভাবে বসানো হয়েছে!");
+    setQuickFeedback("নম্বর সফলভাবে প্লেটে বসানো হয়েছে!");
     setTimeout(() => setQuickFeedback(""), 3000);
   };
 
@@ -179,7 +210,7 @@ export default function PlateCustomizer({
                 <input
                   type="text"
                   value={quickInput}
-                  onChange={(e) => setQuickInput(e.target.value)}
+                  onChange={(e) => handleInputChange(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleQuickParse()}
                   placeholder="Dhaka Metro LA 12 3456"
                   className="flex-1 min-w-0 px-3 sm:px-4 py-2 sm:py-2.5 bg-neutral-50 border border-neutral-300 rounded-lg text-xs sm:text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-amber-500 focus:bg-white font-mono"
@@ -199,70 +230,6 @@ export default function PlateCustomizer({
                   {quickFeedback}
                 </p>
               )}
-            </div>
-
-            {/* Individual Input Fields (User can type freely) */}
-            <div className="pt-2 border-t border-neutral-100">
-              <div className="grid grid-cols-2 gap-2.5 sm:gap-3 mb-3">
-                {/* Metro City Input */}
-                <div>
-                  <label className="text-xs text-neutral-700 block mb-1 font-semibold">
-                    মেট্রো / জেলা
-                  </label>
-                  <input
-                    type="text"
-                    value={customDetails.metroCity}
-                    onChange={(e) => handleUpdate("metroCity", e.target.value)}
-                    placeholder="ঢাকা মেট্রো"
-                    className="w-full px-2.5 sm:px-3 py-2 bg-neutral-50 border border-neutral-300 rounded-lg text-xs sm:text-sm font-semibold text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-amber-500 focus:bg-white transition"
-                  />
-                </div>
-
-                {/* Letter Class Input */}
-                <div>
-                  <label className="text-xs text-neutral-700 block mb-1 font-semibold">
-                    অক্ষর (ভেহিক্যাল ক্লাস)
-                  </label>
-                  <input
-                    type="text"
-                    value={customDetails.vehicleClass}
-                    onChange={(e) => handleUpdate("vehicleClass", e.target.value)}
-                    placeholder="ল বা থ"
-                    className="w-full px-2.5 sm:px-3 py-2 bg-neutral-50 border border-neutral-300 rounded-lg text-xs sm:text-sm font-semibold text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-amber-500 focus:bg-white transition"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
-                {/* Series Number */}
-                <div>
-                  <label className="text-xs text-neutral-700 block mb-1 font-semibold">
-                    সিরিজ নম্বর
-                  </label>
-                  <input
-                    type="text"
-                    value={customDetails.seriesNumber}
-                    onChange={(e) => handleUpdate("seriesNumber", e.target.value)}
-                    placeholder="১২"
-                    className="w-full px-2.5 sm:px-3 py-2 bg-neutral-50 border border-neutral-300 rounded-lg text-xs sm:text-sm font-mono font-semibold text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-amber-500 focus:bg-white transition"
-                  />
-                </div>
-
-                {/* 4 Digit Plate Number */}
-                <div>
-                  <label className="text-xs text-neutral-700 block mb-1 font-semibold">
-                    ৪ ডিজিটের নম্বর
-                  </label>
-                  <input
-                    type="text"
-                    maxLength={6}
-                    value={customDetails.plateNumber}
-                    onChange={(e) => handleUpdate("plateNumber", e.target.value)}
-                    placeholder="৩৪৫৬"
-                    className="w-full px-2.5 sm:px-3 py-2 bg-neutral-50 border border-neutral-300 rounded-lg text-xs sm:text-sm font-mono font-semibold text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-amber-500 focus:bg-white transition"
-                  />
-                </div>
-              </div>
             </div>
 
             {/* Color Scheme Picker */}
@@ -345,6 +312,7 @@ export default function PlateCustomizer({
                   vehicleClass={customDetails.vehicleClass}
                   seriesNumber={customDetails.seriesNumber}
                   plateNumber={customDetails.plateNumber}
+                  fullPlateText={customDetails.fullPlateText}
                   plateType={customDetails.plateType}
                   vehicleType={vehicleType}
                   color={customDetails.plateColor || "white_reflective"}

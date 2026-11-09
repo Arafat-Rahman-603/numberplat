@@ -3,10 +3,11 @@
 import React from "react";
 
 interface PlateGraphicProps {
-  metroCity: string;
-  vehicleClass: string;
-  seriesNumber: string;
-  plateNumber: string;
+  metroCity?: string;
+  vehicleClass?: string;
+  seriesNumber?: string;
+  plateNumber?: string;
+  fullPlateText?: string;
   plateType?: "front" | "back" | "both";
   vehicleType?: "motorcycle" | "scooter";
   color?: "white_reflective" | "black_acrylic" | "yellow_reflective";
@@ -16,8 +17,9 @@ interface PlateGraphicProps {
 export default function PlateGraphic({
   metroCity = "ঢাকা মেট্রো",
   vehicleClass = "ল",
-  seriesNumber = "১২",
-  plateNumber = "৩৪৫৬",
+  seriesNumber = "১১",
+  plateNumber = "১২৩৪",
+  fullPlateText,
   plateType = "front",
   vehicleType = "motorcycle",
   color = "white_reflective",
@@ -95,12 +97,32 @@ export default function PlateGraphic({
               (!metroCity || !metroCity.trim()) &&
               (!vehicleClass || !vehicleClass.trim()) &&
               (!seriesNumber || !seriesNumber.trim()) &&
-              (!plateNumber || !plateNumber.trim());
+              (!plateNumber || !plateNumber.trim()) &&
+              (!fullPlateText || !fullPlateText.trim());
 
-            const city = isAllBlank ? "ঢাকা মেট্রো" : (metroCity?.trim() ?? "");
-            const vClass = isAllBlank ? "ল" : (vehicleClass?.trim() ?? "");
-            const sNum = isAllBlank ? "১২" : (seriesNumber?.trim() ?? "");
-            const pNum = isAllBlank ? "৩৪৫৬" : (plateNumber?.trim() ?? "");
+            let city = isAllBlank ? "ঢাকা মেট্রো" : (metroCity?.trim() ?? "");
+            let vClass = isAllBlank ? "ল" : (vehicleClass?.trim() ?? "");
+            let sNum = isAllBlank ? "১১" : (seriesNumber?.trim() ?? "");
+            let pNum = isAllBlank ? "১২৩৪" : (plateNumber?.trim() ?? "");
+
+            if (!isAllBlank && fullPlateText?.trim() && !city && !vClass) {
+              const parts = fullPlateText.split("-").map((p) => p.trim()).filter(Boolean);
+              if (parts.length >= 4) {
+                city = parts[0];
+                vClass = parts[1];
+                sNum = parts[2];
+                pNum = parts[3];
+              } else if (parts.length === 3) {
+                city = parts[0];
+                vClass = parts[1];
+                pNum = parts[2];
+              } else if (parts.length === 2) {
+                city = parts[0];
+                pNum = parts[1];
+              } else if (parts.length === 1) {
+                city = parts[0];
+              }
+            }
 
             if (isScooter) {
               const line1 = [city, vClass].filter(Boolean).join(" - ");
