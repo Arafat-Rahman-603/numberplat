@@ -99,7 +99,7 @@ export default function TrackOrderClient() {
         </div>
 
         {/* Search header card */}
-        <div className="bg-neutral-800 rounded-3xl p-6 sm:p-8 border border-neutral-700 shadow-xl mb-8">
+        <div className="bg-neutral-800 rounded-2xl sm:rounded-3xl p-4 sm:p-8 border border-neutral-700 shadow-xl mb-6 sm:mb-8">
           <h1 className="text-2xl sm:text-3xl font-extrabold mb-2 text-white">
             অর্ডার ট্র্যাকিং সিস্টেম
           </h1>
@@ -158,7 +158,7 @@ export default function TrackOrderClient() {
               return (
                 <div
                   key={order.id}
-                  className="bg-neutral-800 rounded-3xl p-6 sm:p-8 border border-neutral-700 shadow-xl"
+                  className="bg-neutral-800 rounded-2xl sm:rounded-3xl p-4 sm:p-8 border border-neutral-700 shadow-xl"
                 >
                   {/* Top Bar */}
                   <div className="flex flex-wrap items-center justify-between gap-3 pb-5 border-b border-neutral-700">

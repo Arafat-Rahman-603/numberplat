@@ -179,7 +179,7 @@ export default function OrderSuccessClient({
         </div>
 
         {/* Customer & Delivery Details */}
-        <div className="bg-neutral-800 rounded-3xl p-6 border border-neutral-700 shadow-xl mb-6">
+        <div className="bg-neutral-800 rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-neutral-700 shadow-xl">
           <h2 className="font-bold text-lg mb-4 flex items-center gap-2">
             <MapPin className="w-5 h-5 text-amber-400" />
             ডেলিভারি তথ্য

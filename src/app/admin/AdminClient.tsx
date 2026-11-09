@@ -134,43 +134,43 @@ export default function AdminClient() {
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-100 flex flex-col">
       {/* Top Bar */}
-      <header className="bg-neutral-900 border-b border-neutral-800 px-6 py-4 sticky top-0 z-30">
-        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="bg-amber-500 text-black font-black px-2.5 py-1 rounded-lg text-lg">
+      <header className="bg-neutral-900 border-b border-neutral-800 px-4 sm:px-6 py-3 sm:py-4 sticky top-0 z-30">
+        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5">
+            <div className="bg-amber-500 text-black font-black px-2 py-0.5 rounded-lg text-base sm:text-lg">
               BP
             </div>
             <div>
-              <h1 className="font-bold text-lg leading-tight">BikePlate BD Admin Portal</h1>
-              <p className="text-xs text-neutral-400">অর্ডার ও পেমেন্ট ম্যানেজমেন্ট ড্যাশবোর্ড</p>
+              <h1 className="font-bold text-base sm:text-lg leading-tight">BikePlate BD Admin</h1>
+              <p className="text-[10px] sm:text-xs text-neutral-400">অর্ডার ও পেমেন্ট পোর্টাল</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <Link
               href="/"
               target="_blank"
-              className="text-xs bg-neutral-800 hover:bg-neutral-700 text-neutral-300 px-3 py-2 rounded-xl transition flex items-center gap-1.5"
+              className="text-xs bg-neutral-800 hover:bg-neutral-700 text-neutral-300 px-2.5 py-1.5 rounded-lg transition flex items-center gap-1"
             >
-              <span>ওয়েবসাইট দেখুন</span>
-              <ExternalLink className="w-3.5 h-3.5" />
+              <span>ওয়েবসাইট</span>
+              <ExternalLink className="w-3 h-3" />
             </Link>
 
             <a
               href="/api/admin/export"
-              className="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-3 py-2 rounded-xl transition flex items-center gap-1.5"
+              className="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-2.5 py-1.5 rounded-lg transition flex items-center gap-1"
             >
-              <Download className="w-3.5 h-3.5" />
-              <span>CSV রিপোর্ট ডাউনলোড</span>
+              <Download className="w-3 h-3" />
+              <span>CSV রিপোর্ট</span>
             </a>
           </div>
         </div>
       </header>
 
       {/* Main Container */}
-      <main className="max-w-7xl mx-auto w-full p-6 flex-1">
+      <main className="max-w-7xl mx-auto w-full p-3 sm:p-6 flex-1">
         {/* Navigation Tabs */}
-        <div className="flex border-b border-neutral-800 mb-6 gap-2">
+        <div className="flex overflow-x-auto border-b border-neutral-800 mb-5 gap-1 sm:gap-2">
           <button
             onClick={() => setActiveTab("orders")}
             className={`px-5 py-3 font-semibold text-sm transition border-b-2 flex items-center gap-2 ${
