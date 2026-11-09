@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { getPlateDisplaySegments } from "@/lib/plate-parser";
 
 interface PlateGraphicProps {
   metroCity?: string;
@@ -8,6 +9,7 @@ interface PlateGraphicProps {
   seriesNumber?: string;
   plateNumber?: string;
   fullPlateText?: string;
+  rawInput?: string;
   plateType?: "front" | "back" | "both";
   vehicleType?: "motorcycle" | "scooter";
   color?: "white_reflective" | "black_acrylic" | "yellow_reflective";
@@ -20,6 +22,7 @@ export default function PlateGraphic({
   seriesNumber = "১১",
   plateNumber = "১২৩৪",
   fullPlateText,
+  rawInput,
   plateType = "front",
   vehicleType = "motorcycle",
   color = "white_reflective",
@@ -93,40 +96,21 @@ export default function PlateGraphic({
 
           {/* Plate Text Rendering */}
           {(() => {
-            const isAllBlank =
-              (!metroCity || !metroCity.trim()) &&
-              (!vehicleClass || !vehicleClass.trim()) &&
-              (!seriesNumber || !seriesNumber.trim()) &&
-              (!plateNumber || !plateNumber.trim()) &&
-              (!fullPlateText || !fullPlateText.trim());
+            const input = rawInput?.trim() || fullPlateText?.trim() || "";
+            const hasLegacyFields = Boolean(metroCity || vehicleClass || seriesNumber || plateNumber);
+            const legacyFallback = hasLegacyFields
+              ? `${metroCity || "ঢাকা মেট্রো"} ${vehicleClass || "ল"} ${seriesNumber || "১১"} ${plateNumber || "১২৩৪"}`
+              : "ঢাকা মেট্রো-ল-১১-১২৩৪";
 
-            let city = isAllBlank ? "ঢাকা মেট্রো" : (metroCity?.trim() ?? "");
-            let vClass = isAllBlank ? "ল" : (vehicleClass?.trim() ?? "");
-            let sNum = isAllBlank ? "১১" : (seriesNumber?.trim() ?? "");
-            let pNum = isAllBlank ? "১২৩৪" : (plateNumber?.trim() ?? "");
-
-            if (!isAllBlank && fullPlateText?.trim() && !city && !vClass) {
-              const parts = fullPlateText.split("-").map((p) => p.trim()).filter(Boolean);
-              if (parts.length >= 4) {
-                city = parts[0];
-                vClass = parts[1];
-                sNum = parts[2];
-                pNum = parts[3];
-              } else if (parts.length === 3) {
-                city = parts[0];
-                vClass = parts[1];
-                pNum = parts[2];
-              } else if (parts.length === 2) {
-                city = parts[0];
-                pNum = parts[1];
-              } else if (parts.length === 1) {
-                city = parts[0];
-              }
-            }
+            const data = getPlateDisplaySegments(input || legacyFallback);
 
             if (isScooter) {
-              const line1 = [city, vClass].filter(Boolean).join(" - ");
-              const line2 = [sNum, pNum].filter(Boolean).join(" - ");
+              const line1 = data.isStructured
+                ? [data.city, data.vehicleClass].filter(Boolean).join(" - ")
+                : (data.rawText?.split("-")[0]?.trim() || "ঢাকা মেট্রো - ল");
+              const line2 = data.isStructured
+                ? [data.series, data.number].filter(Boolean).join(" - ")
+                : (data.rawText?.split("-").slice(1).join(" - ")?.trim() || "১১ - ১২৩৪");
 
               return (
                 <div className="flex flex-col items-center justify-center text-center z-10 leading-tight">
@@ -137,13 +121,13 @@ export default function PlateGraphic({
                   >
                     {line1 || "ঢাকা মেট্রো - ল"}
                   </div>
-                  {(line2 || isAllBlank) && (
+                  {line2 && (
                     <div
                       className={`${fontSizes} font-mono ${
                         isBlackAcrylic ? "text-white" : "text-neutral-950"
                       } whitespace-nowrap mt-0.5`}
                     >
-                      {line2 || "১২ - ৩৪৫৬"}
+                      {line2}
                     </div>
                   )}
                 </div>
@@ -151,35 +135,53 @@ export default function PlateGraphic({
             }
 
             // Single-Line Layout for Motorcycle (285 x 50 mm)
-            const segments = [
-              { text: city, isNumber: false },
-              { text: vClass, isNumber: false },
-              { text: sNum, isNumber: true },
-              { text: pNum, isNumber: true },
-            ].filter((s) => s.text.length > 0);
+            if (data.isStructured) {
+              const segments = [
+                { text: data.city, isNumber: false },
+                { text: data.vehicleClass, isNumber: false },
+                { text: data.series, isNumber: true },
+                { text: data.number, isNumber: true },
+              ].filter((s) => s.text && s.text.trim().length > 0) as {
+                text: string;
+                isNumber: boolean;
+              }[];
 
+              return (
+                <div className="flex items-center justify-center whitespace-nowrap text-nowrap flex-nowrap z-10 gap-1 sm:gap-2 font-bold">
+                  {segments.map((seg, idx) => (
+                    <React.Fragment key={idx}>
+                      {idx > 0 && (
+                        <span
+                          className={`font-bold ${
+                            isBlackAcrylic ? "text-neutral-400" : "text-neutral-700"
+                          }`}
+                        >
+                          -
+                        </span>
+                      )}
+                      <span
+                        className={`${fontSizes} ${
+                          seg.isNumber ? "font-mono" : ""
+                        } ${isBlackAcrylic ? "text-white" : "text-neutral-950"}`}
+                      >
+                        {seg.text}
+                      </span>
+                    </React.Fragment>
+                  ))}
+                </div>
+              );
+            }
+
+            // Fallback for custom raw text
             return (
               <div className="flex items-center justify-center whitespace-nowrap text-nowrap flex-nowrap z-10 gap-1 sm:gap-2 font-bold">
-                {segments.map((seg, idx) => (
-                  <React.Fragment key={idx}>
-                    {idx > 0 && (
-                      <span
-                        className={`font-bold ${
-                          isBlackAcrylic ? "text-neutral-400" : "text-neutral-700"
-                        }`}
-                      >
-                        -
-                      </span>
-                    )}
-                    <span
-                      className={`${fontSizes} ${
-                        seg.isNumber ? "font-mono" : ""
-                      } ${isBlackAcrylic ? "text-white" : "text-neutral-950"}`}
-                    >
-                      {seg.text}
-                    </span>
-                  </React.Fragment>
-                ))}
+                <span
+                  className={`${fontSizes} ${
+                    isBlackAcrylic ? "text-white" : "text-neutral-950"
+                  }`}
+                >
+                  {data.rawText || "ঢাকা মেট্রো - ল - ১১ - ১২৩৪"}
+                </span>
               </div>
             );
           })()}

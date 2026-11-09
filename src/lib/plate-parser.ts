@@ -134,25 +134,39 @@ export function parseQuickPlateString(raw: string): {
   }
 
   // Also check if city is in Bengali directly
-  const bengaliCities = [
-    "ঢাকা মেট্রো",
-    "চট্টগ্রাম মেট্রো",
-    "সিলেট মেট্রো",
-    "রাজশাহী মেট্রো",
-    "খুলনা মেট্রো",
-    "বরিশাল মেট্রো",
-    "রংপুর মেট্রো",
-    "ময়মনসিংহ মেট্রো",
-    "গাজীপুর",
-    "নারায়ণগঞ্জ",
-    "কুমিল্লা",
-    "যশোর",
-    "বগুড়া",
-    "পাবনা",
+  const BENGALI_CITIES: [string, string][] = [
+    ["ঢাকা মেট্রো", "ঢাকা মেট্রো"],
+    ["ঢাকা", "ঢাকা মেট্রো"],
+    ["চট্টগ্রাম মেট্রো", "চট্টগ্রাম মেট্রো"],
+    ["চট্টগ্রাম", "চট্টগ্রাম মেট্রো"],
+    ["সিলেট মেট্রো", "সিলেট মেট্রো"],
+    ["সিলেট", "সিলেট মেট্রো"],
+    ["রাজশাহী মেট্রো", "রাজশাহী মেট্রো"],
+    ["রাজশাহী", "রাজশাহী মেট্রো"],
+    ["খুলনা মেট্রো", "খুলনা মেট্রো"],
+    ["খুলনা", "খুলনা মেট্রো"],
+    ["বরিশাল মেট্রো", "বরিশাল মেট্রো"],
+    ["বরিশাল", "বরিশাল মেট্রো"],
+    ["রংপুর মেট্রো", "রংপুর মেট্রো"],
+    ["রংপুর", "রংপুর মেট্রো"],
+    ["ময়মনসিংহ মেট্রো", "ময়মনসিংহ মেট্রো"],
+    ["ময়মনসিংহ", "ময়মনসিংহ মেট্রো"],
+    ["গাজীপুর", "গাজীপুর"],
+    ["নারায়ণগঞ্জ", "নারায়ণগঞ্জ"],
+    ["কুমিল্লা", "কুমিল্লা"],
+    ["যশোর", "যশোর"],
+    ["বগুড়া", "বগুড়া"],
+    ["পাবনা", "পাবনা"],
+    ["টাঙ্গাইল", "টাঙ্গাইল"],
+    ["ফরিদপুর", "ফরিদপুর"],
+    ["কুষ্টিয়া", "কুষ্টিয়া"],
+    ["নোয়াখালী", "নোয়াখালী"],
+    ["দিনাজপুর", "দিনাজপুর"],
+    ["কক্সবাজার", "কক্সবাজার"],
   ];
-  for (const bc of bengaliCities) {
-    if (clean.includes(bc)) {
-      result.metroCity = bc;
+  for (const [key, standardCity] of BENGALI_CITIES) {
+    if (clean.includes(key)) {
+      result.metroCity = standardCity;
       break;
     }
   }
@@ -198,4 +212,48 @@ export function parseQuickPlateString(raw: string): {
   }
 
   return result;
+}
+
+export interface PlateDisplayData {
+  city?: string;
+  vehicleClass?: string;
+  series?: string;
+  number?: string;
+  rawText?: string;
+  isStructured: boolean;
+}
+
+export function getPlateDisplaySegments(raw?: string): PlateDisplayData {
+  if (!raw || !raw.trim()) {
+    return {
+      city: "ঢাকা মেট্রো",
+      vehicleClass: "ল",
+      series: "১১",
+      number: "১২৩৪",
+      isStructured: true,
+    };
+  }
+
+  const clean = raw.trim();
+  const parsed = parseQuickPlateString(clean);
+
+  const hasAnyParsed = Boolean(
+    parsed.metroCity || parsed.vehicleClass || parsed.seriesNumber || parsed.plateNumber
+  );
+
+  if (hasAnyParsed) {
+    return {
+      city: parsed.metroCity,
+      vehicleClass: parsed.vehicleClass,
+      series: parsed.seriesNumber,
+      number: parsed.plateNumber,
+      isStructured: true,
+    };
+  }
+
+  // Fallback for custom free-form text:
+  return {
+    rawText: convertToBengaliDigits(clean).replace(/-/g, " - "),
+    isStructured: false,
+  };
 }

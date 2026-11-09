@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { parseQuickPlateString, convertToBengaliDigits } from "../plate-parser";
+import { parseQuickPlateString, convertToBengaliDigits, getPlateDisplaySegments } from "../plate-parser";
 
 describe("Smart Plate Parser Unit Tests", () => {
   it("converts English digits to Bengali digits", () => {
@@ -45,6 +45,30 @@ describe("Smart Plate Parser Unit Tests", () => {
     expect(result.vehicleClass).toBe("থ");
     expect(result.seriesNumber).toBe("১৫");
     expect(result.plateNumber).toBe("৭৮৯০");
+  });
+
+  it("getPlateDisplaySegments returns default for empty input", () => {
+    const res = getPlateDisplaySegments("");
+    expect(res.city).toBe("ঢাকা মেট্রো");
+    expect(res.vehicleClass).toBe("ল");
+    expect(res.series).toBe("১১");
+    expect(res.number).toBe("১২৩৪");
+  });
+
+  it("getPlateDisplaySegments formats English input to Bengali plate segments", () => {
+    const res = getPlateDisplaySegments("Dhaka Metro LA 12 3456");
+    expect(res.city).toBe("ঢাকা মেট্রো");
+    expect(res.vehicleClass).toBe("ল");
+    expect(res.series).toBe("১২");
+    expect(res.number).toBe("৩৪৫৬");
+  });
+
+  it("getPlateDisplaySegments handles vehicle class 'থ'", () => {
+    const res = getPlateDisplaySegments("Dhaka Metro Th 11 1234");
+    expect(res.city).toBe("ঢাকা মেট্রো");
+    expect(res.vehicleClass).toBe("থ");
+    expect(res.series).toBe("১১");
+    expect(res.number).toBe("১২৩৪");
   });
 });
 

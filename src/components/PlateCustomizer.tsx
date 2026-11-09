@@ -40,49 +40,58 @@ export default function PlateCustomizer({
 
   const handleInputChange = (val: string) => {
     setQuickInput(val);
-    if (!val.trim()) return;
+    if (!val.trim()) {
+      onChange({
+        ...customDetails,
+        fullPlateText: "",
+        metroCity: "",
+        vehicleClass: "",
+        seriesNumber: "",
+        plateNumber: "",
+      });
+      return;
+    }
 
     const parsed = parseQuickPlateString(val);
-    const updated = {
-      ...customDetails,
-      ...(parsed.metroCity && { metroCity: parsed.metroCity }),
-      ...(parsed.vehicleClass && { vehicleClass: parsed.vehicleClass }),
-      ...(parsed.seriesNumber && { seriesNumber: parsed.seriesNumber }),
-      ...(parsed.plateNumber && { plateNumber: parsed.plateNumber }),
-    };
-
     const parts = [
-      updated.metroCity?.trim(),
-      updated.vehicleClass?.trim(),
-      updated.seriesNumber?.trim(),
-      updated.plateNumber?.trim(),
+      parsed.metroCity?.trim(),
+      parsed.vehicleClass?.trim(),
+      parsed.seriesNumber?.trim(),
+      parsed.plateNumber?.trim(),
     ].filter(Boolean);
 
-    updated.fullPlateText = parts.length > 0 ? parts.join("-") : val.trim();
-    onChange(updated);
+    const fullPlateText = parts.length > 0 ? parts.join("-") : val.trim();
+
+    onChange({
+      ...customDetails,
+      fullPlateText,
+      metroCity: parsed.metroCity || "",
+      vehicleClass: parsed.vehicleClass || "",
+      seriesNumber: parsed.seriesNumber || "",
+      plateNumber: parsed.plateNumber || "",
+    });
   };
 
   const handleQuickParse = () => {
     if (!quickInput.trim()) return;
     const parsed = parseQuickPlateString(quickInput);
-
-    const updated = {
-      ...customDetails,
-      ...(parsed.metroCity && { metroCity: parsed.metroCity }),
-      ...(parsed.vehicleClass && { vehicleClass: parsed.vehicleClass }),
-      ...(parsed.seriesNumber && { seriesNumber: parsed.seriesNumber }),
-      ...(parsed.plateNumber && { plateNumber: parsed.plateNumber }),
-    };
-
     const parts = [
-      updated.metroCity?.trim(),
-      updated.vehicleClass?.trim(),
-      updated.seriesNumber?.trim(),
-      updated.plateNumber?.trim(),
+      parsed.metroCity?.trim(),
+      parsed.vehicleClass?.trim(),
+      parsed.seriesNumber?.trim(),
+      parsed.plateNumber?.trim(),
     ].filter(Boolean);
 
-    updated.fullPlateText = parts.length > 0 ? parts.join("-") : quickInput.trim();
-    onChange(updated);
+    const fullPlateText = parts.length > 0 ? parts.join("-") : quickInput.trim();
+
+    onChange({
+      ...customDetails,
+      fullPlateText,
+      metroCity: parsed.metroCity || "",
+      vehicleClass: parsed.vehicleClass || "",
+      seriesNumber: parsed.seriesNumber || "",
+      plateNumber: parsed.plateNumber || "",
+    });
 
     setQuickFeedback("নম্বর সফলভাবে প্লেটে বসানো হয়েছে!");
     setTimeout(() => setQuickFeedback(""), 3000);
@@ -308,10 +317,7 @@ export default function PlateCustomizer({
                 className="w-full rounded-2xl p-2 sm:p-8 md:p-12 flex flex-col items-center justify-center relative min-h-[160px] sm:min-h-[220px] shadow-inner border border-neutral-800 overflow-hidden"
               >
                 <PlateGraphic
-                  metroCity={customDetails.metroCity}
-                  vehicleClass={customDetails.vehicleClass}
-                  seriesNumber={customDetails.seriesNumber}
-                  plateNumber={customDetails.plateNumber}
+                  rawInput={quickInput}
                   fullPlateText={customDetails.fullPlateText}
                   plateType={customDetails.plateType}
                   vehicleType={vehicleType}
