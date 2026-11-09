@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowDown, CheckCircle2 } from "lucide-react";
+import { ArrowDown, CheckCircle2, ShieldCheck, FileText, X } from "lucide-react";
 import PlateGraphic from "./PlateGraphic";
 import { CustomPlateDetails } from "@/types";
 import { parseQuickPlateString } from "@/lib/plate-parser";
@@ -12,8 +12,6 @@ interface PlateCustomizerProps {
   onProceedToOrder: () => void;
 }
 
-
-
 export default function PlateCustomizer({
   customDetails,
   onChange,
@@ -21,6 +19,7 @@ export default function PlateCustomizer({
 }: PlateCustomizerProps) {
   const [quickInput, setQuickInput] = useState("");
   const [quickFeedback, setQuickFeedback] = useState("");
+  const [showNoticeModal, setShowNoticeModal] = useState(false);
 
   const vehicleType = customDetails.vehicleType || "motorcycle";
 
@@ -107,7 +106,7 @@ export default function PlateCustomizer({
 
                   {/* Mini Preview Graphic */}
                   <div className="w-full max-w-[130px] h-6 bg-white border border-neutral-800 rounded px-1 flex items-center justify-center text-[8px] min-[380px]:text-[9px] font-bold text-neutral-900 whitespace-nowrap mt-1">
-                    ঢাকা-ল-১২-৩৪৫৬
+                    ঢাকা-ল-১১-১২৩৪
                   </div>
 
                   {/* Title & Specs */}
@@ -115,8 +114,11 @@ export default function PlateCustomizer({
                     <span className="font-extrabold text-xs sm:text-sm text-neutral-900 block">
                       মোটরসাইকেল
                     </span>
-                    <span className="text-[10px] sm:text-[11px] text-neutral-500 font-mono">
-                      285 × 50 mm
+                    <span className="text-[10px] sm:text-[11px] text-neutral-600 font-mono font-semibold block">
+                      ২৮৫ × ৫০ মি.মি.
+                    </span>
+                    <span className="text-[9px] text-emerald-700 font-semibold block">
+                      একক আনুভূমিক সারি (BRTA)
                     </span>
                   </div>
                 </div>
@@ -148,19 +150,19 @@ export default function PlateCustomizer({
                   {/* Mini Preview Graphic for Scooter (Squarish 2 lines) */}
                   <div className="w-11 sm:w-12 h-8 sm:h-9 bg-white border border-neutral-800 rounded px-1 flex flex-col items-center justify-center text-[6.5px] sm:text-[7px] font-bold text-neutral-900 leading-tight mt-1">
                     <span>ঢাকা-ল</span>
-                    <span>১২-৩৪৫৬</span>
+                    <span>১১-১২৩৪</span>
                   </div>
 
                   {/* Title & Specs */}
                   <div className="mt-2">
                     <span className="font-extrabold text-xs sm:text-sm text-neutral-900 block">
-                      স্কুটার
+                      স্কুটার / স্কুটি
                     </span>
-                    <span className="text-[10px] sm:text-[11px] text-neutral-500 font-mono">
-                      200 × 100 mm
+                    <span className="text-[10px] sm:text-[11px] text-neutral-600 font-mono font-semibold block">
+                      ২০০ × ১০০ মি.মি.
                     </span>
                     <span className="inline-block text-[8px] sm:text-[9px] font-bold bg-neutral-900 text-white px-2 py-0.5 rounded-full mt-0.5 sm:mt-1">
-                      +৳৫০
+                      দ্বি-সারি (+৳৫০)
                     </span>
                   </div>
                 </div>
@@ -350,15 +352,42 @@ export default function PlateCustomizer({
                 />
               </div>
 
-              {/* Specification Notice under Canvas */}
-              <div className="mt-4 text-center space-y-1">
-                <p className="text-xs font-semibold text-neutral-700">
-                  {vehicleType === "scooter"
-                    ? "200 × 100 mm • দুই লাইন (স্কুটার মাপ)"
-                    : "285 × 50 mm • এক লাইন (BRTA মাপ)"}
-                </p>
-                <p className="text-[11px] text-neutral-500">
-                  নম্বর পূরণ না হওয়া পর্যন্ত নমুনা দেখাচ্ছে। রেজিস্ট্রেশন কাগজের সাথে মিলিয়ে নিন।
+              {/* Official BRTA Compliance Verification Card under Canvas */}
+              <div className="mt-4 p-3.5 bg-emerald-50/70 border border-emerald-200/80 rounded-xl text-left space-y-2">
+                <div className="flex flex-wrap items-center justify-between gap-1 text-xs">
+                  <span className="font-bold text-emerald-950 flex items-center gap-1.5">
+                    <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+                    <span>বিআরটিএ সরকারি প্রজ্ঞাপন মান অনুযায়ী প্রিভিউ</span>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setShowNoticeModal(true)}
+                    className="text-[11px] text-emerald-800 hover:text-emerald-950 font-bold underline flex items-center gap-1 cursor-pointer"
+                  >
+                    <FileText className="w-3.5 h-3.5 text-emerald-700" />
+                    <span>সরকারি প্রজ্ঞাপন দেখুন</span>
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 text-[11px] pt-1.5 border-t border-emerald-200/60 font-mono">
+                  <div>
+                    <span className="text-neutral-500 block text-[10px]">প্লেটের মাপ:</span>
+                    <span className="font-bold text-neutral-900">
+                      {vehicleType === "scooter"
+                        ? "২০০ × ১০০ মি.মি. (দ্বি-সারি)"
+                        : "২৮৫ × ৫০ মি.মি. (আনুভূমিক সারি)"}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-neutral-500 block text-[10px]">ফন্ট উচ্চতা ও কালার:</span>
+                    <span className="font-bold text-neutral-900">
+                      কমপক্ষে ২০ মি.মি. • সাদা ব্যাকগ্রাউন্ড
+                    </span>
+                  </div>
+                </div>
+
+                <p className="text-[10px] text-neutral-500 italic pt-0.5">
+                  সড়ক পরিবহন আইন ২০১৮ ও বিধিমালা ২০২২ অনুযায়ী কোনো বাড়তি বিজ্ঞাপন বা অননুমোদিত নকশা ছাড়া নিখুঁতভাবে তৈরি।
                 </p>
               </div>
             </div>
@@ -377,6 +406,93 @@ export default function PlateCustomizer({
           </div>
         </div>
       </div>
+
+      {/* Official BRTA Circular Requirements Modal */}
+      {showNoticeModal && (
+        <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-xs flex items-center justify-center p-3 sm:p-5 overflow-y-auto">
+          <div className="bg-white rounded-3xl max-w-2xl w-full p-4 sm:p-7 shadow-2xl relative text-neutral-900 my-8 border border-neutral-200">
+            {/* Close Button */}
+            <button
+              type="button"
+              onClick={() => setShowNoticeModal(false)}
+              className="absolute top-4 right-4 w-8 h-8 rounded-full bg-neutral-100 hover:bg-neutral-200 text-neutral-700 flex items-center justify-center transition"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            {/* Header */}
+            <div className="border-b border-neutral-100 pb-3 mb-4">
+              <span className="text-[10px] sm:text-xs font-bold text-amber-700 uppercase tracking-widest bg-amber-100 px-2.5 py-0.5 rounded-full inline-block mb-1.5">
+                বিআরটিএ সরকারি প্রজ্ঞাপন নির্দেশিকা
+              </span>
+              <h4 className="text-base sm:text-xl font-black text-neutral-900">
+                মোটরসাইকেলের সম্মুখভাগে প্রদর্শনযোগ্য লাইসেন্স প্লেট সংক্রান্ত সরকারি শর্তাবলী
+              </h4>
+              <p className="text-neutral-500 text-xs mt-1">
+                সড়ক পরিবহন আইন, ২০১৮ ও সড়ক পরিবহন বিধিমালা, ২০২২ অনুযায়ী সকল শর্ত মেনেই আমাদের প্লেট তৈরি করা হয়:
+              </p>
+            </div>
+
+            {/* Official Table */}
+            <div className="overflow-x-auto border border-neutral-200 rounded-xl mb-4 text-xs">
+              <table className="w-full text-left divide-y divide-neutral-200">
+                <thead className="bg-neutral-100 text-neutral-800 font-bold">
+                  <tr>
+                    <th className="p-2.5 sm:p-3">ক্রম</th>
+                    <th className="p-2.5 sm:p-3">যানবাহনের ধরন</th>
+                    <th className="p-2.5 sm:p-3">দৈর্ঘ্য ও প্রস্থ</th>
+                    <th className="p-2.5 sm:p-3">ফন্ট সাইজ</th>
+                    <th className="p-2.5 sm:p-3">সরকারি নিয়মাবলী</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-neutral-100">
+                  <tr className="bg-white">
+                    <td className="p-2.5 sm:p-3 font-mono font-bold">১</td>
+                    <td className="p-2.5 sm:p-3 font-semibold">স্কুটার / স্কুটি</td>
+                    <td className="p-2.5 sm:p-3 font-mono font-semibold text-neutral-900">
+                      ২০০ × ১০০ মি.মি.
+                    </td>
+                    <td className="p-2.5 sm:p-3 font-mono">কমপক্ষে ২০ মি.মি.</td>
+                    <td className="p-2.5 sm:p-3 text-neutral-600">
+                      সাদা পটভূমিতে কালো রঙের বাংলা অক্ষর ও সংখ্যা। দ্বি-সারি মাপ। কোনো অতিরিক্ত বিজ্ঞাপন দেওয়া যাবে না।
+                    </td>
+                  </tr>
+                  <tr className="bg-amber-50/40">
+                    <td className="p-2.5 sm:p-3 font-mono font-bold">২</td>
+                    <td className="p-2.5 sm:p-3 font-semibold">সাধারণ মোটরসাইকেল</td>
+                    <td className="p-2.5 sm:p-3 font-mono font-bold text-amber-900">
+                      ২৮৫ × ৫০ মি.মি.
+                    </td>
+                    <td className="p-2.5 sm:p-3 font-mono">কমপক্ষে ২০ মি.মি.</td>
+                    <td className="p-2.5 sm:p-3 text-neutral-600">
+                      একটি আনুভূমিক সারিতে প্রদর্শন (যেমন: ঢাকা মেট্রো-ল-১১-১২৩৪)। সাদা পটভূমিতে কালো অক্ষর।
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            {/* Guarantee Notice */}
+            <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3 sm:p-4 text-xs text-emerald-950 space-y-1 mb-4">
+              <p className="font-bold flex items-center gap-1.5">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span>বাইকপ্লেট বিডি-র শতভাগ আইনগত নিশ্চয়তা:</span>
+              </p>
+              <p className="text-neutral-700 leading-relaxed text-[11px] sm:text-xs">
+                আমাদের প্রতিটি নম্বর প্লেট এই সরকারি গেজেট ও বিআরটিএ-র মিলিমিটার মাপ, সঠিক ফন্ট উচ্চতা (২০ মি.মি.) এবং সাদা ব্যাকগ্রাউন্ডে কালো অক্ষরের নির্দেশনা অক্ষরে অক্ষরে মেনে তৈরি। রাস্তায় ট্রাফিক পুলিশ বা বিআরটিএ চেকিংয়ে কোনো সমস্যা হবে না।
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setShowNoticeModal(false)}
+              className="w-full bg-neutral-900 hover:bg-neutral-800 text-white font-bold py-2.5 rounded-xl text-sm transition"
+            >
+              বুঝেছি, প্রিভিউতে ফিরে যান
+            </button>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

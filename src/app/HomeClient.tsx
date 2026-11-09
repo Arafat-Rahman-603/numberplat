@@ -25,9 +25,9 @@ export default function HomeClient({
     vehicleType: "motorcycle",
     metroCity: "ঢাকা মেট্রো",
     vehicleClass: "ল",
-    seriesNumber: "১২",
-    plateNumber: "৩৪৫৬",
-    fullPlateText: "ঢাকা মেট্রো-ল-১২-৩৪৫৬",
+    seriesNumber: "১১",
+    plateNumber: "১২৩৪",
+    fullPlateText: "ঢাকা মেট্রো-ল-১১-১২৩৪",
     plateColor: "white_reflective",
   });
 

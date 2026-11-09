@@ -105,8 +105,8 @@ export default function HeroSection({
                 <PlateGraphic
                   metroCity="ঢাকা মেট্রো"
                   vehicleClass="ল"
-                  seriesNumber="১২"
-                  plateNumber="৩৪৫৬"
+                  seriesNumber="১১"
+                  plateNumber="১২৩৪"
                   plateType="front"
                   color="white_reflective"
                   size="md"

@@ -27,18 +27,19 @@ export default function PlateGraphic({
   const isBlackAcrylic = color === "black_acrylic";
   const isYellow = color === "yellow_reflective";
 
-  // Motorcycle: 285 x 50 mm (single line)
-  // Scooter: 200 x 100 mm (two lines)
+  // Official BRTA Circular Dimensions:
+  // 1. Motorcycle (স্কুটি ব্যতীত অন্যান্য মোটরসাইকেল): দৈর্ঘ্য ২৮৫ মি.মি. × প্রস্থ ৫০ মি.মি. (Aspect ratio: 285 / 50 = 5.7 : 1, একক আনুভূমিক সারি)
+  // 2. Scooter (মোটরসাইকেল - স্কুটি/স্কুটার): দৈর্ঘ্য ২০০ মি.মি. × প্রস্থ ১০০ মি.মি. (Aspect ratio: 200 / 100 = 2 : 1, দ্বি-সারি পরিমাপ)
   const containerSizes = isScooter
     ? {
-        sm: "max-w-[200px] h-[100px] p-2",
-        md: "max-w-[280px] h-[140px] p-3",
-        lg: "max-w-[340px] h-[170px] p-3.5",
+        sm: "w-full max-w-[200px] aspect-[2/1] p-2",
+        md: "w-full max-w-[260px] aspect-[2/1] p-2.5",
+        lg: "w-full max-w-[320px] aspect-[2/1] p-3",
       }[size]
     : {
-        sm: "max-w-[340px] h-[60px] px-2.5",
-        md: "max-w-[500px] h-[82px] sm:h-[88px] px-4",
-        lg: "max-w-[620px] h-[96px] sm:h-[106px] px-5 sm:px-6",
+        sm: "w-full max-w-[340px] aspect-[285/50] px-2 min-[360px]:px-2.5",
+        md: "w-full max-w-[480px] aspect-[285/50] px-2.5 sm:px-4",
+        lg: "w-full max-w-[570px] aspect-[285/50] px-3 sm:px-5",
       }[size];
 
   const fontSizes = isScooter
@@ -161,14 +162,7 @@ export default function PlateGraphic({
             );
           })()}
 
-          {/* Micro BRTA Watermark */}
-          <div
-            className={`absolute right-2 bottom-0.5 text-[6px] sm:text-[7px] font-mono tracking-widest uppercase font-semibold pointer-events-none opacity-50 ${
-              isBlackAcrylic ? "text-neutral-400" : "text-neutral-600"
-            }`}
-          >
-            BRTA
-          </div>
+          {/* Official Compliant Surface (No external ads or decorative watermarks) */}
         </div>
       </div>
     </div>
