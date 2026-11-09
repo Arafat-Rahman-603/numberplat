@@ -1,16 +1,91 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowDown, CheckCircle2, ShieldCheck, FileText, X } from "lucide-react";
+import { ArrowDown, CheckCircle2, ChevronDown } from "lucide-react";
 import PlateGraphic from "./PlateGraphic";
 import { CustomPlateDetails } from "@/types";
-import { parseQuickPlateString } from "@/lib/plate-parser";
+import {
+  convertToBengaliDigits,
+  convertToBengaliLetter,
+  parseQuickPlateString,
+} from "@/lib/plate-parser";
 
 interface PlateCustomizerProps {
   customDetails: CustomPlateDetails;
   onChange: (details: CustomPlateDetails) => void;
   onProceedToOrder: () => void;
 }
+
+const DISTRICT_OPTIONS = [
+  { label: "ঢাকা মেট্রো", value: "ঢাকা মেট্রো" },
+  { label: "চট্টগ্রাম মেট্রো", value: "চট্টগ্রাম মেট্রো" },
+  { label: "সিলেট মেট্রো", value: "সিলেট মেট্রো" },
+  { label: "রাজশাহী মেট্রো", value: "রাজশাহী মেট্রো" },
+  { label: "খুলনা মেট্রো", value: "খুলনা মেট্রো" },
+  { label: "বরিশাল মেট্রো", value: "বরিশাল মেট্রো" },
+  { label: "রংপুর মেট্রো", value: "রংপুর মেট্রো" },
+  { label: "ময়মনসিংহ মেট্রো", value: "ময়মনসিংহ মেট্রো" },
+  { label: "ঢাকা", value: "ঢাকা" },
+  { label: "গাজীপুর", value: "গাজীপুর" },
+  { label: "নারায়ণগঞ্জ", value: "নারায়ণগঞ্জ" },
+  { label: "কুমিল্লা", value: "কুমিল্লা" },
+  { label: "চট্টগ্রাম", value: "চট্টগ্রাম" },
+  { label: "সিলেট", value: "সিলেট" },
+  { label: "রাজশাহী", value: "রাজশাহী" },
+  { label: "খুলনা", value: "খুলনা" },
+  { label: "বরিশাল", value: "বরিশাল" },
+  { label: "রংপুর", value: "রংপুর" },
+  { label: "ময়মনসিংহ", value: "ময়মনসিংহ" },
+  { label: "বগুড়া", value: "বগুড়া" },
+  { label: "যশোর", value: "যশোর" },
+  { label: "পাবনা", value: "পাবনা" },
+  { label: "টাঙ্গাইল", value: "টাঙ্গাইল" },
+  { label: "ফরিদপুর", value: "ফরিদপুর" },
+  { label: "কুষ্টিয়া", value: "কুষ্টিয়া" },
+  { label: "দিনাজপুর", value: "দিনাজপুর" },
+  { label: "নোয়াখালী", value: "নোয়াখালী" },
+  { label: "কক্সবাজার", value: "কক্সবাজার" },
+  { label: "ব্রাহ্মণবাড়িয়া", value: "ব্রাহ্মণবাড়িয়া" },
+  { label: "চাঁদপুর", value: "চাঁদপুর" },
+  { label: "ফেনী", value: "ফেনী" },
+  { label: "লক্ষ্মীপুর", value: "লক্ষ্মীপুর" },
+  { label: "জামালপুর", value: "জামালপুর" },
+  { label: "নেত্রকোণা", value: "নেত্রকোণা" },
+  { label: "শেরপুর", value: "শেরপুর" },
+  { label: "কিশোরগঞ্জ", value: "কিশোরগঞ্জ" },
+  { label: "মানিকগঞ্জ", value: "মানিকগঞ্জ" },
+  { label: "মুন্সীগঞ্জ", value: "মুন্সীগঞ্জ" },
+  { label: "নরসিংদী", value: "নরসিংদী" },
+  { label: "সিরাজগঞ্জ", value: "সিরাজগঞ্জ" },
+  { label: "নাটোর", value: "নাটোর" },
+  { label: "নওগাঁ", value: "নওগাঁ" },
+  { label: "চাঁপাইনবাবগঞ্জ", value: "চাঁপাইনবাবগঞ্জ" },
+  { label: "জয়পুরহাট", value: "জয়পুরহাট" },
+  { label: "বাগেরহাট", value: "বাগেরহাট" },
+  { label: "সাতক্ষীরা", value: "সাতক্ষীরা" },
+  { label: "ঝিনাইদহ", value: "ঝিনাইদহ" },
+  { label: "মাগুরা", value: "মাগুরা" },
+  { label: "মেহেরপুর", value: "মেহেরপুর" },
+  { label: "নড়াইল", value: "নড়াইল" },
+  { label: "চুয়াডাঙ্গা", value: "চুয়াডাঙ্গা" },
+  { label: "পটুয়াখালী", value: "পটুয়াখালী" },
+  { label: "ভোলা", value: "ভোলা" },
+  { label: "ঝালকাঠি", value: "ঝালকাঠি" },
+  { label: "পিরোজপুর", value: "পিরোজপুর" },
+  { label: "বরগুনা", value: "বরগুনা" },
+  { label: "হবিগঞ্জ", value: "হবিগঞ্জ" },
+  { label: "মৌলভীবাজার", value: "মৌলভীবাজার" },
+  { label: "সুনামগঞ্জ", value: "সুনামগঞ্জ" },
+  { label: "কুড়িগ্রাম", value: "কুড়িগ্রাম" },
+  { label: "গাইবান্ধা", value: "গাইবান্ধা" },
+  { label: "লালমনিরহাট", value: "লালমনিরহাট" },
+  { label: "নীলফামারী", value: "নীলফামারী" },
+  { label: "পঞ্চগড়", value: "পঞ্চগড়" },
+  { label: "ঠাকুরগাঁও", value: "ঠাকুরগাঁও" },
+  { label: "বান্দরবান", value: "বান্দরবান" },
+  { label: "খাগড়াছড়ি", value: "খাগড়াছড়ি" },
+  { label: "রাঙ্গামাটি", value: "রাঙ্গামাটি" },
+];
 
 export default function PlateCustomizer({
   customDetails,
@@ -19,190 +94,201 @@ export default function PlateCustomizer({
 }: PlateCustomizerProps) {
   const [quickInput, setQuickInput] = useState("");
   const [quickFeedback, setQuickFeedback] = useState("");
-  const [showNoticeModal, setShowNoticeModal] = useState(false);
 
   const vehicleType = customDetails.vehicleType || "motorcycle";
+  const hasBorder = customDetails.hasBorder !== false;
+  const quantity = Math.max(1, customDetails.quantity || 1);
 
-  const handleUpdate = (field: keyof CustomPlateDetails, value: any) => {
+  // Helper to sync changes and recompute fullPlateText
+  const updateCustomDetails = (updates: Partial<CustomPlateDetails>) => {
     const updated = {
       ...customDetails,
-      [field]: value,
+      ...updates,
     };
+
     const parts = [
       updated.metroCity?.trim(),
       updated.vehicleClass?.trim(),
       updated.seriesNumber?.trim(),
       updated.plateNumber?.trim(),
     ].filter(Boolean);
-    updated.fullPlateText = parts.join("-");
+
+    updated.fullPlateText = parts.length > 0 ? parts.join("-") : "";
     onChange(updated);
   };
 
-  const handleInputChange = (val: string) => {
+  // When user types in the Quick Input box
+  const handleQuickInputChange = (val: string) => {
     setQuickInput(val);
-    if (!val.trim()) {
-      onChange({
-        ...customDetails,
-        fullPlateText: "",
-        metroCity: "",
-        vehicleClass: "",
-        seriesNumber: "",
-        plateNumber: "",
-      });
-      return;
-    }
+    if (!val.trim()) return;
 
     const parsed = parseQuickPlateString(val);
-    const parts = [
-      parsed.metroCity?.trim(),
-      parsed.vehicleClass?.trim(),
-      parsed.seriesNumber?.trim(),
-      parsed.plateNumber?.trim(),
-    ].filter(Boolean);
+    const updates: Partial<CustomPlateDetails> = {};
+    if (parsed.metroCity) updates.metroCity = parsed.metroCity;
+    if (parsed.vehicleClass) updates.vehicleClass = parsed.vehicleClass;
+    if (parsed.seriesNumber) updates.seriesNumber = parsed.seriesNumber;
+    if (parsed.plateNumber) updates.plateNumber = parsed.plateNumber;
 
-    const fullPlateText = parts.length > 0 ? parts.join("-") : val.trim();
-
-    onChange({
-      ...customDetails,
-      fullPlateText,
-      metroCity: parsed.metroCity || "",
-      vehicleClass: parsed.vehicleClass || "",
-      seriesNumber: parsed.seriesNumber || "",
-      plateNumber: parsed.plateNumber || "",
-    });
+    if (Object.keys(updates).length > 0) {
+      updateCustomDetails(updates);
+    }
   };
 
+  // When clicking "বসিয়ে দিন" button
   const handleQuickParse = () => {
     if (!quickInput.trim()) return;
     const parsed = parseQuickPlateString(quickInput);
-    const parts = [
-      parsed.metroCity?.trim(),
-      parsed.vehicleClass?.trim(),
-      parsed.seriesNumber?.trim(),
-      parsed.plateNumber?.trim(),
-    ].filter(Boolean);
 
-    const fullPlateText = parts.length > 0 ? parts.join("-") : quickInput.trim();
+    const updates: Partial<CustomPlateDetails> = {
+      metroCity: parsed.metroCity || customDetails.metroCity || "ঢাকা মেট্রো",
+      vehicleClass: parsed.vehicleClass || customDetails.vehicleClass || "ল",
+      seriesNumber: parsed.seriesNumber || customDetails.seriesNumber || "১২",
+      plateNumber: parsed.plateNumber || customDetails.plateNumber || "৩৪৫৬",
+    };
 
-    onChange({
-      ...customDetails,
-      fullPlateText,
-      metroCity: parsed.metroCity || "",
-      vehicleClass: parsed.vehicleClass || "",
-      seriesNumber: parsed.seriesNumber || "",
-      plateNumber: parsed.plateNumber || "",
-    });
-
+    updateCustomDetails(updates);
     setQuickFeedback("নম্বর সফলভাবে প্লেটে বসানো হয়েছে!");
     setTimeout(() => setQuickFeedback(""), 3000);
   };
 
+  // Manual Field Handlers
+  const handleMetroCityChange = (val: string) => {
+    updateCustomDetails({ metroCity: val });
+  };
+
+  const handleVehicleClassChange = (val: string) => {
+    const converted = convertToBengaliLetter(val);
+    updateCustomDetails({ vehicleClass: converted });
+  };
+
+  const handleSeriesNumberChange = (val: string) => {
+    const converted = convertToBengaliDigits(val);
+    updateCustomDetails({ seriesNumber: converted });
+  };
+
+  const handlePlateNumberChange = (val: string) => {
+    const converted = convertToBengaliDigits(val);
+    updateCustomDetails({ plateNumber: converted });
+  };
+
+  const handleVehicleTypeChange = (type: "motorcycle" | "scooter") => {
+    updateCustomDetails({ vehicleType: type });
+  };
+
+  const handleBorderToggle = () => {
+    updateCustomDetails({ hasBorder: !hasBorder });
+  };
+
+  const handleQuantityChange = (delta: number) => {
+    const nextQty = Math.max(1, quantity + delta);
+    updateCustomDetails({ quantity: nextQty });
+  };
+
   return (
-    <section id="customizer" className="py-14 bg-[#F8F6F0] border-b border-neutral-300">
+    <section id="customizer" className="py-12 bg-[#F8F6F0] border-b border-neutral-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
           {/* =========================================
               LEFT COLUMN: ১ প্লেটের তথ্য
              ========================================= */}
-          <div className="lg:col-span-6 bg-white rounded-2xl p-4 sm:p-6 md:p-7 border border-neutral-200 shadow-sm space-y-5 sm:space-y-6">
+          <div className="bg-white rounded-2xl p-5 sm:p-6 md:p-7 border border-neutral-200 shadow-xs space-y-5">
             {/* Step Header */}
-            <div className="flex items-center gap-3 pb-3 border-b border-neutral-100">
-              <span className="w-7 h-7 rounded-full bg-amber-100 text-amber-900 font-bold text-sm flex items-center justify-center font-mono">
+            <div className="flex items-center gap-2.5">
+              <span className="w-6 h-6 rounded-full bg-[#FEF3C7] text-[#92400E] font-bold text-xs flex items-center justify-center font-mono">
                 ১
               </span>
-              <h3 className="font-extrabold text-xl text-neutral-900">প্লেটের তথ্য</h3>
+              <h3 className="font-extrabold text-lg sm:text-xl text-neutral-900">
+                প্লেটের তথ্য
+              </h3>
             </div>
 
-            {/* Vehicle Type Cards (Motorcycle vs Scooter) */}
+            {/* Vehicle Type Cards */}
             <div>
-              <label className="text-xs font-bold text-neutral-800 block mb-2.5">
+              <label className="text-xs font-bold text-neutral-800 block mb-2">
                 প্লেটের ধরন
               </label>
 
-              <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
+              <div className="grid grid-cols-2 gap-3">
                 {/* Option 1: Motorcycle (285 x 50 mm) */}
                 <div
-                  onClick={() => handleUpdate("vehicleType", "motorcycle")}
-                  className={`p-2.5 sm:p-4 rounded-xl border-2 cursor-pointer transition relative flex flex-col items-center justify-between text-center min-h-[135px] sm:min-h-[145px] ${
+                  onClick={() => handleVehicleTypeChange("motorcycle")}
+                  className={`rounded-xl p-3 sm:p-3.5 relative flex flex-col items-center justify-between text-center min-h-[145px] cursor-pointer transition ${
                     vehicleType === "motorcycle"
-                      ? "bg-[#FFFDF7] border-neutral-900 shadow-sm"
-                      : "bg-white border-neutral-200 hover:border-neutral-300"
+                      ? "bg-[#FFFDF7] border-2 border-neutral-900 shadow-xs"
+                      : "bg-white border border-neutral-200 hover:border-neutral-300"
                   }`}
                 >
                   {/* Top Right Radio Indicator */}
-                  <div className="absolute top-2 right-2 sm:top-2.5 sm:right-2.5">
+                  <div className="absolute top-2.5 right-2.5">
                     <div
-                      className={`w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full border flex items-center justify-center ${
+                      className={`w-4 h-4 rounded-full border flex items-center justify-center ${
                         vehicleType === "motorcycle"
-                          ? "border-neutral-900 bg-neutral-900"
-                          : "border-neutral-400 bg-white"
+                          ? "border-neutral-900 bg-white"
+                          : "border-neutral-300 bg-white"
                       }`}
                     >
                       {vehicleType === "motorcycle" && (
-                        <div className="w-1.5 h-1.5 rounded-full bg-white" />
+                        <div className="w-2 h-2 rounded-full bg-neutral-900" />
                       )}
                     </div>
                   </div>
 
                   {/* Mini Preview Graphic */}
-                  <div className="w-full max-w-[130px] h-6 bg-white border border-neutral-800 rounded px-1 flex items-center justify-center text-[8px] min-[380px]:text-[9px] font-bold text-neutral-900 whitespace-nowrap mt-1">
-                    ঢাকা-ল-১১-১২৩৪
+                  <div className="w-full max-w-[120px] h-6 bg-white border border-neutral-800 rounded px-1.5 flex items-center justify-center text-[9px] font-bold text-neutral-900 whitespace-nowrap mt-1">
+                    ঢাকা-ল-৮২-৩৪৫৬
                   </div>
 
                   {/* Title & Specs */}
-                  <div className="mt-2.5 sm:mt-3">
-                    <span className="font-extrabold text-xs sm:text-sm text-neutral-900 block">
+                  <div className="mt-2">
+                    <span className="font-extrabold text-sm text-neutral-900 block">
                       মোটরসাইকেল
                     </span>
-                    <span className="text-[10px] sm:text-[11px] text-neutral-600 font-mono font-semibold block">
-                      ২৮৫ × ৫০ মি.মি.
-                    </span>
-                    <span className="text-[9px] text-emerald-700 font-semibold block">
-                      একক আনুভূমিক সারি (BRTA)
+                    <span className="text-[11px] text-neutral-500 font-mono block mt-0.5">
+                      285 × 50 mm
                     </span>
                   </div>
                 </div>
 
                 {/* Option 2: Scooter (200 x 100 mm) */}
                 <div
-                  onClick={() => handleUpdate("vehicleType", "scooter")}
-                  className={`p-2.5 sm:p-4 rounded-xl border-2 cursor-pointer transition relative flex flex-col items-center justify-between text-center min-h-[135px] sm:min-h-[145px] ${
+                  onClick={() => handleVehicleTypeChange("scooter")}
+                  className={`rounded-xl p-3 sm:p-3.5 relative flex flex-col items-center justify-between text-center min-h-[145px] cursor-pointer transition ${
                     vehicleType === "scooter"
-                      ? "bg-[#FFFDF7] border-neutral-900 shadow-sm"
-                      : "bg-white border-neutral-200 hover:border-neutral-300"
+                      ? "bg-[#FFFDF7] border-2 border-neutral-900 shadow-xs"
+                      : "bg-white border border-neutral-200 hover:border-neutral-300"
                   }`}
                 >
                   {/* Top Right Radio Indicator */}
-                  <div className="absolute top-2 right-2 sm:top-2.5 sm:right-2.5">
+                  <div className="absolute top-2.5 right-2.5">
                     <div
-                      className={`w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full border flex items-center justify-center ${
+                      className={`w-4 h-4 rounded-full border flex items-center justify-center ${
                         vehicleType === "scooter"
-                          ? "border-neutral-900 bg-neutral-900"
-                          : "border-neutral-400 bg-white"
+                          ? "border-neutral-900 bg-white"
+                          : "border-neutral-300 bg-white"
                       }`}
                     >
                       {vehicleType === "scooter" && (
-                        <div className="w-1.5 h-1.5 rounded-full bg-white" />
+                        <div className="w-2 h-2 rounded-full bg-neutral-900" />
                       )}
                     </div>
                   </div>
 
-                  {/* Mini Preview Graphic for Scooter (Squarish 2 lines) */}
-                  <div className="w-11 sm:w-12 h-8 sm:h-9 bg-white border border-neutral-800 rounded px-1 flex flex-col items-center justify-center text-[6.5px] sm:text-[7px] font-bold text-neutral-900 leading-tight mt-1">
+                  {/* Mini Preview Graphic for Scooter (2 Lines) */}
+                  <div className="w-11 h-8 bg-white border border-neutral-800 rounded px-1 flex flex-col items-center justify-center text-[7px] font-bold text-neutral-900 leading-tight mt-1">
                     <span>ঢাকা-ল</span>
-                    <span>১১-১২৩৪</span>
+                    <span>৮২-৩৪৫৬</span>
                   </div>
 
                   {/* Title & Specs */}
                   <div className="mt-2">
-                    <span className="font-extrabold text-xs sm:text-sm text-neutral-900 block">
-                      স্কুটার / স্কুটি
+                    <span className="font-extrabold text-sm text-neutral-900 block">
+                      স্কুটার
                     </span>
-                    <span className="text-[10px] sm:text-[11px] text-neutral-600 font-mono font-semibold block">
-                      ২০০ × ১০০ মি.মি.
+                    <span className="text-[11px] text-neutral-500 font-mono block mt-0.5">
+                      200 × 100 mm
                     </span>
-                    <span className="inline-block text-[8px] sm:text-[9px] font-bold bg-neutral-900 text-white px-2 py-0.5 rounded-full mt-0.5 sm:mt-1">
-                      দ্বি-সারি (+৳৫০)
+                    <span className="inline-block bg-neutral-900 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mt-1.5">
+                      +৳৫০
                     </span>
                   </div>
                 </div>
@@ -210,28 +296,32 @@ export default function PlateCustomizer({
             </div>
 
             {/* Quick One-Line Input Parser Feature */}
-            <div className="pt-1">
+            <div>
               <label className="text-xs font-bold text-neutral-800 block mb-1.5">
-                পুরো নম্বর একবারে লিখুন <span className="text-neutral-500 font-normal">চাইলে</span>
+                পুরো নম্বর একবারে লিখুন <span className="text-neutral-400 font-normal">চাইলে</span>
               </label>
 
               <div className="flex gap-2">
                 <input
                   type="text"
                   value={quickInput}
-                  onChange={(e) => handleInputChange(e.target.value)}
+                  onChange={(e) => handleQuickInputChange(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleQuickParse()}
                   placeholder="Dhaka Metro LA 12 3456"
-                  className="flex-1 min-w-0 px-3 sm:px-4 py-2 sm:py-2.5 bg-neutral-50 border border-neutral-300 rounded-lg text-xs sm:text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-amber-500 focus:bg-white font-mono"
+                  className="flex-1 min-w-0 px-3.5 py-2.5 bg-white border border-neutral-300 rounded-lg text-sm text-neutral-900 placeholder:text-neutral-400 placeholder:font-mono focus:outline-none focus:border-amber-500 font-sans"
                 />
                 <button
                   type="button"
                   onClick={handleQuickParse}
-                  className="bg-amber-400 hover:bg-amber-300 text-neutral-950 font-bold px-4 sm:px-6 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm transition shadow-xs whitespace-nowrap shrink-0"
+                  className="bg-amber-400 hover:bg-amber-500 text-neutral-950 font-bold px-5 py-2.5 rounded-lg text-sm transition shrink-0 shadow-xs cursor-pointer"
                 >
                   বসিয়ে দিন
                 </button>
               </div>
+
+              <p className="text-[11px] text-neutral-500 mt-1.5">
+                ইংরেজি বা বাংলা দুটোই চলবে, স্পেস বা হাইফেন দিয়ে। L/LA = ল, H/HA = হ।
+              </p>
 
               {quickFeedback && (
                 <p className="text-xs text-emerald-600 font-semibold mt-1.5 flex items-center gap-1">
@@ -241,50 +331,101 @@ export default function PlateCustomizer({
               )}
             </div>
 
-            {/* Color Scheme Picker */}
-            <div className="pt-2 border-t border-neutral-100">
-              <label className="text-xs font-bold text-neutral-800 block mb-2">
-                প্লেটের কালার
+            {/* Dashed Separator */}
+            <div className="border-t border-dashed border-neutral-200" />
+
+            {/* Form Field 1: নিবন্ধন এলাকা * */}
+            <div>
+              <label className="text-xs font-bold text-neutral-800 block mb-1.5">
+                নিবন্ধন এলাকা <span className="text-red-500">*</span>
               </label>
-              <div className="flex flex-wrap gap-2">
-                <button
-                  type="button"
-                  onClick={() => handleUpdate("plateColor", "white_reflective")}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold border flex items-center gap-1.5 transition ${
-                    customDetails.plateColor === "white_reflective" || !customDetails.plateColor
-                      ? "border-neutral-900 bg-neutral-900 text-white"
-                      : "border-neutral-300 bg-white text-neutral-700 hover:bg-neutral-50"
-                  }`}
+              <div className="relative">
+                <select
+                  value={customDetails.metroCity || ""}
+                  onChange={(e) => handleMetroCityChange(e.target.value)}
+                  className="w-full appearance-none px-3.5 py-2.5 bg-white border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:border-amber-500 cursor-pointer pr-10"
                 >
-                  <span className="w-2.5 h-2.5 rounded-full bg-white border border-neutral-400" />
-                  সাদা রিফ্লেক্টিভ (BRTA মান)
-                </button>
+                  <option value="">এলাকা বেছে নিন</option>
+                  {DISTRICT_OPTIONS.map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+                <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-neutral-500">
+                  <ChevronDown className="w-4 h-4" />
+                </div>
+              </div>
+            </div>
 
-                <button
-                  type="button"
-                  onClick={() => handleUpdate("plateColor", "black_acrylic")}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold border flex items-center gap-1.5 transition ${
-                    customDetails.plateColor === "black_acrylic"
-                      ? "border-neutral-900 bg-neutral-900 text-white"
-                      : "border-neutral-300 bg-white text-neutral-700 hover:bg-neutral-50"
-                  }`}
-                >
-                  <span className="w-2.5 h-2.5 rounded-full bg-black border border-white" />
-                  ব্ল্যাক অ্যাক্রিলিক
-                </button>
+            {/* Form Row: সিরিজ * and প্রথম অংশ * */}
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="text-xs font-bold text-neutral-800 block mb-1.5">
+                  সিরিজ <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={customDetails.vehicleClass || ""}
+                  onChange={(e) => handleVehicleClassChange(e.target.value)}
+                  placeholder="ল"
+                  className="w-full px-3.5 py-2.5 bg-white border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:border-amber-500 font-sans"
+                />
+              </div>
 
-                <button
-                  type="button"
-                  onClick={() => handleUpdate("plateColor", "yellow_reflective")}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold border flex items-center gap-1.5 transition ${
-                    customDetails.plateColor === "yellow_reflective"
-                      ? "border-neutral-900 bg-neutral-900 text-white"
-                      : "border-neutral-300 bg-white text-neutral-700 hover:bg-neutral-50"
+              <div>
+                <label className="text-xs font-bold text-neutral-800 block mb-1.5">
+                  প্রথম অংশ <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={customDetails.seriesNumber || ""}
+                  onChange={(e) => handleSeriesNumberChange(e.target.value)}
+                  placeholder="৮২"
+                  className="w-full px-3.5 py-2.5 bg-white border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:border-amber-500 font-mono"
+                />
+              </div>
+            </div>
+
+            {/* Form Field: শেষ অংশ * */}
+            <div>
+              <label className="text-xs font-bold text-neutral-800 block mb-1.5">
+                শেষ অংশ <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                value={customDetails.plateNumber || ""}
+                onChange={(e) => handlePlateNumberChange(e.target.value)}
+                placeholder="৩৪৫৬"
+                className="w-full px-3.5 py-2.5 bg-white border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:border-amber-500 font-mono"
+              />
+            </div>
+
+            {/* Dashed Separator */}
+            <div className="border-t border-dashed border-neutral-200" />
+
+            {/* Border Toggle Switch */}
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={handleBorderToggle}
+                className={`w-11 h-6 flex items-center rounded-full p-1 transition-colors cursor-pointer ${
+                  hasBorder ? "bg-neutral-900" : "bg-neutral-300"
+                }`}
+              >
+                <div
+                  className={`bg-white w-4 h-4 rounded-full shadow-xs transform transition-transform ${
+                    hasBorder ? "translate-x-5" : "translate-x-0"
                   }`}
-                >
-                  <span className="w-2.5 h-2.5 rounded-full bg-amber-400 border border-neutral-600" />
-                  হলুদ রিফ্লেক্টিভ
-                </button>
+                />
+              </button>
+              <div>
+                <span className="font-bold text-xs sm:text-sm text-neutral-900 block">
+                  বর্ডার
+                </span>
+                <span className="text-[11px] text-neutral-500 block">
+                  প্লেটের চারপাশে কালো বর্ডার, বাড়তি টাকা নেই
+                </span>
               </div>
             </div>
           </div>
@@ -292,86 +433,95 @@ export default function PlateCustomizer({
           {/* =========================================
               RIGHT COLUMN: ২ আপনার প্লেট দেখতে এমন হবে
              ========================================= */}
-          <div className="lg:col-span-6 bg-white rounded-2xl p-4 sm:p-6 md:p-7 border border-neutral-200 shadow-sm flex flex-col justify-between">
+          <div className="bg-white rounded-2xl p-5 sm:p-6 md:p-7 border border-neutral-200 shadow-xs flex flex-col justify-between">
             <div>
               {/* Step Header */}
-              <div className="flex items-center gap-3 pb-3 border-b border-neutral-100 mb-4">
-                <span className="w-7 h-7 rounded-full bg-amber-100 text-amber-900 font-bold text-sm flex items-center justify-center font-mono">
+              <div className="flex items-center gap-2.5 mb-4">
+                <span className="w-6 h-6 rounded-full bg-[#FEF3C7] text-[#92400E] font-bold text-xs flex items-center justify-center font-mono">
                   ২
                 </span>
-                <h3 className="font-extrabold text-xl text-neutral-900">
+                <h3 className="font-extrabold text-lg sm:text-xl text-neutral-900">
                   আপনার প্লেট দেখতে এমন হবে
                 </h3>
               </div>
 
-              {/* Dark Grid Canvas Box (Matching Reference) */}
+              {/* Dark Grid Canvas Box (Exact Blueprint Look) */}
               <div
                 style={{
                   backgroundColor: "#111622",
                   backgroundImage: `
-                    linear-gradient(to right, rgba(255, 255, 255, 0.06) 1px, transparent 1px),
-                    linear-gradient(to bottom, rgba(255, 255, 255, 0.06) 1px, transparent 1px)
+                    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px)
                   `,
-                  backgroundSize: "22px 22px",
+                  backgroundSize: "20px 20px",
                 }}
-                className="w-full rounded-2xl p-2 sm:p-8 md:p-12 flex flex-col items-center justify-center relative min-h-[160px] sm:min-h-[220px] shadow-inner border border-neutral-800 overflow-hidden"
+                className="w-full rounded-2xl p-5 sm:p-8 md:p-12 flex flex-col items-center justify-center min-h-[170px] sm:min-h-[210px] shadow-inner border border-neutral-800 overflow-hidden"
               >
                 <PlateGraphic
-                  rawInput={quickInput}
+                  metroCity={customDetails.metroCity}
+                  vehicleClass={customDetails.vehicleClass}
+                  seriesNumber={customDetails.seriesNumber}
+                  plateNumber={customDetails.plateNumber}
                   fullPlateText={customDetails.fullPlateText}
-                  plateType={customDetails.plateType}
+                  rawInput={quickInput}
                   vehicleType={vehicleType}
+                  hasBorder={hasBorder}
                   color={customDetails.plateColor || "white_reflective"}
                   size="lg"
                 />
               </div>
 
-              {/* Official BRTA Compliance Verification Card under Canvas */}
-              <div className="mt-4 p-3.5 bg-emerald-50/70 border border-emerald-200/80 rounded-xl text-left space-y-2">
-                <div className="flex flex-wrap items-center justify-between gap-1 text-xs">
-                  <span className="font-bold text-emerald-950 flex items-center gap-1.5">
-                    <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-                    <span>বিআরটিএ সরকারি প্রজ্ঞাপন মান অনুযায়ী প্রিভিউ</span>
+              {/* Captions under Canvas */}
+              <div className="text-center mt-3 space-y-1">
+                <p className="text-xs sm:text-sm text-neutral-500 font-medium">
+                  {vehicleType === "scooter"
+                    ? "200 × 100 mm · দ্বি-সারি (BRTA মাপ)"
+                    : "285 × 50 mm · এক লাইন (BRTA মাপ)"}
+                </p>
+                <p className="text-[11px] sm:text-xs text-neutral-400">
+                  নম্বর পূরণ না হওয়া পর্যন্ত নমুনা দেখাচ্ছে। রেজিস্ট্রেশন কাগজের সাথে মিলিয়ে নিন।
+                </p>
+              </div>
+
+              {/* Quantity Selector Card */}
+              <div className="bg-white border border-neutral-200 rounded-xl p-3.5 sm:p-4 mt-4">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-sm text-neutral-900">
+                    কয়টি প্লেট লাগবে?
                   </span>
-                  <button
-                    type="button"
-                    onClick={() => setShowNoticeModal(true)}
-                    className="text-[11px] text-emerald-800 hover:text-emerald-950 font-bold underline flex items-center gap-1 cursor-pointer"
-                  >
-                    <FileText className="w-3.5 h-3.5 text-emerald-700" />
-                    <span>সরকারি প্রজ্ঞাপন দেখুন</span>
-                  </button>
-                </div>
-
-                <div className="grid grid-cols-2 gap-2 text-[11px] pt-1.5 border-t border-emerald-200/60 font-mono">
-                  <div>
-                    <span className="text-neutral-500 block text-[10px]">প্লেটের মাপ:</span>
-                    <span className="font-bold text-neutral-900">
-                      {vehicleType === "scooter"
-                        ? "২০০ × ১০০ মি.মি. (দ্বি-সারি)"
-                        : "২৮৫ × ৫০ মি.মি. (আনুভূমিক সারি)"}
+                  <div className="flex items-center border border-neutral-300 rounded-full px-2.5 py-0.5 space-x-3 bg-white">
+                    <button
+                      type="button"
+                      onClick={() => handleQuantityChange(-1)}
+                      disabled={quantity <= 1}
+                      className="w-6 h-6 flex items-center justify-center text-neutral-600 hover:text-neutral-950 disabled:opacity-30 disabled:cursor-not-allowed font-bold text-base cursor-pointer select-none"
+                    >
+                      −
+                    </button>
+                    <span className="font-bold text-sm text-neutral-900 min-w-[16px] text-center font-mono select-none">
+                      {convertToBengaliDigits(String(quantity))}
                     </span>
-                  </div>
-                  <div>
-                    <span className="text-neutral-500 block text-[10px]">ফন্ট উচ্চতা ও কালার:</span>
-                    <span className="font-bold text-neutral-900">
-                      কমপক্ষে ২০ মি.মি. • সাদা ব্যাকগ্রাউন্ড
-                    </span>
+                    <button
+                      type="button"
+                      onClick={() => handleQuantityChange(1)}
+                      className="w-6 h-6 flex items-center justify-center text-neutral-600 hover:text-neutral-950 font-bold text-base cursor-pointer select-none"
+                    >
+                      +
+                    </button>
                   </div>
                 </div>
-
-                <p className="text-[10px] text-neutral-500 italic pt-0.5">
-                  সড়ক পরিবহন আইন ২০১৮ ও বিধিমালা ২০২২ অনুযায়ী কোনো বাড়তি বিজ্ঞাপন বা অননুমোদিত নকশা ছাড়া নিখুঁতভাবে তৈরি।
+                <p className="text-[11px] text-neutral-400 mt-2">
+                  একাধিক বাইক? প্রতিটির নম্বর আলাদা দিন। স্কুটার প্লেট +৳৫০।
                 </p>
               </div>
             </div>
 
             {/* Action Button to Checkout */}
-            <div className="mt-6 pt-4 border-t border-neutral-100">
+            <div className="mt-5 pt-3 border-t border-neutral-100">
               <button
                 type="button"
                 onClick={onProceedToOrder}
-                className="w-full bg-amber-400 hover:bg-amber-300 text-neutral-950 font-extrabold py-3.5 px-6 rounded-xl transition shadow-md hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2 text-base"
+                className="w-full bg-amber-400 hover:bg-amber-300 text-neutral-950 font-extrabold py-3.5 px-6 rounded-xl transition shadow-xs hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2 text-sm sm:text-base cursor-pointer"
               >
                 <span>এই প্লেটটি নিয়ে অর্ডার করুন</span>
                 <ArrowDown className="w-4 h-4" />
@@ -380,93 +530,6 @@ export default function PlateCustomizer({
           </div>
         </div>
       </div>
-
-      {/* Official BRTA Circular Requirements Modal */}
-      {showNoticeModal && (
-        <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-xs flex items-center justify-center p-3 sm:p-5 overflow-y-auto">
-          <div className="bg-white rounded-3xl max-w-2xl w-full p-4 sm:p-7 shadow-2xl relative text-neutral-900 my-8 border border-neutral-200">
-            {/* Close Button */}
-            <button
-              type="button"
-              onClick={() => setShowNoticeModal(false)}
-              className="absolute top-4 right-4 w-8 h-8 rounded-full bg-neutral-100 hover:bg-neutral-200 text-neutral-700 flex items-center justify-center transition"
-            >
-              <X className="w-4 h-4" />
-            </button>
-
-            {/* Header */}
-            <div className="border-b border-neutral-100 pb-3 mb-4">
-              <span className="text-[10px] sm:text-xs font-bold text-amber-700 uppercase tracking-widest bg-amber-100 px-2.5 py-0.5 rounded-full inline-block mb-1.5">
-                বিআরটিএ সরকারি প্রজ্ঞাপন নির্দেশিকা
-              </span>
-              <h4 className="text-base sm:text-xl font-black text-neutral-900">
-                মোটরসাইকেলের সম্মুখভাগে প্রদর্শনযোগ্য লাইসেন্স প্লেট সংক্রান্ত সরকারি শর্তাবলী
-              </h4>
-              <p className="text-neutral-500 text-xs mt-1">
-                সড়ক পরিবহন আইন, ২০১৮ ও সড়ক পরিবহন বিধিমালা, ২০২২ অনুযায়ী সকল শর্ত মেনেই আমাদের প্লেট তৈরি করা হয়:
-              </p>
-            </div>
-
-            {/* Official Table */}
-            <div className="overflow-x-auto border border-neutral-200 rounded-xl mb-4 text-xs">
-              <table className="w-full text-left divide-y divide-neutral-200">
-                <thead className="bg-neutral-100 text-neutral-800 font-bold">
-                  <tr>
-                    <th className="p-2.5 sm:p-3">ক্রম</th>
-                    <th className="p-2.5 sm:p-3">যানবাহনের ধরন</th>
-                    <th className="p-2.5 sm:p-3">দৈর্ঘ্য ও প্রস্থ</th>
-                    <th className="p-2.5 sm:p-3">ফন্ট সাইজ</th>
-                    <th className="p-2.5 sm:p-3">সরকারি নিয়মাবলী</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-neutral-100">
-                  <tr className="bg-white">
-                    <td className="p-2.5 sm:p-3 font-mono font-bold">১</td>
-                    <td className="p-2.5 sm:p-3 font-semibold">স্কুটার / স্কুটি</td>
-                    <td className="p-2.5 sm:p-3 font-mono font-semibold text-neutral-900">
-                      ২০০ × ১০০ মি.মি.
-                    </td>
-                    <td className="p-2.5 sm:p-3 font-mono">কমপক্ষে ২০ মি.মি.</td>
-                    <td className="p-2.5 sm:p-3 text-neutral-600">
-                      সাদা পটভূমিতে কালো রঙের বাংলা অক্ষর ও সংখ্যা। দ্বি-সারি মাপ। কোনো অতিরিক্ত বিজ্ঞাপন দেওয়া যাবে না।
-                    </td>
-                  </tr>
-                  <tr className="bg-amber-50/40">
-                    <td className="p-2.5 sm:p-3 font-mono font-bold">২</td>
-                    <td className="p-2.5 sm:p-3 font-semibold">সাধারণ মোটরসাইকেল</td>
-                    <td className="p-2.5 sm:p-3 font-mono font-bold text-amber-900">
-                      ২৮৫ × ৫০ মি.মি.
-                    </td>
-                    <td className="p-2.5 sm:p-3 font-mono">কমপক্ষে ২০ মি.মি.</td>
-                    <td className="p-2.5 sm:p-3 text-neutral-600">
-                      একটি আনুভূমিক সারিতে প্রদর্শন (যেমন: ঢাকা মেট্রো-ল-১১-১২৩৪)। সাদা পটভূমিতে কালো অক্ষর।
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            {/* Guarantee Notice */}
-            <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3 sm:p-4 text-xs text-emerald-950 space-y-1 mb-4">
-              <p className="font-bold flex items-center gap-1.5">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>বাইকপ্লেট বিডি-র শতভাগ আইনগত নিশ্চয়তা:</span>
-              </p>
-              <p className="text-neutral-700 leading-relaxed text-[11px] sm:text-xs">
-                আমাদের প্রতিটি নম্বর প্লেট এই সরকারি গেজেট ও বিআরটিএ-র মিলিমিটার মাপ, সঠিক ফন্ট উচ্চতা (২০ মি.মি.) এবং সাদা ব্যাকগ্রাউন্ডে কালো অক্ষরের নির্দেশনা অক্ষরে অক্ষরে মেনে তৈরি। রাস্তায় ট্রাফিক পুলিশ বা বিআরটিএ চেকিংয়ে কোনো সমস্যা হবে না।
-              </p>
-            </div>
-
-            <button
-              type="button"
-              onClick={() => setShowNoticeModal(false)}
-              className="w-full bg-neutral-900 hover:bg-neutral-800 text-white font-bold py-2.5 rounded-xl text-sm transition"
-            >
-              বুঝেছি, প্রিভিউতে ফিরে যান
-            </button>
-          </div>
-        </div>
-      )}
     </section>
   );
 }

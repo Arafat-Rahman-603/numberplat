@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { getPlateDisplaySegments } from "@/lib/plate-parser";
+import { convertToBengaliDigits, parseQuickPlateString } from "@/lib/plate-parser";
 
 interface PlateGraphicProps {
   metroCity?: string;
@@ -12,6 +12,7 @@ interface PlateGraphicProps {
   rawInput?: string;
   plateType?: "front" | "back" | "both";
   vehicleType?: "motorcycle" | "scooter";
+  hasBorder?: boolean;
   color?: "white_reflective" | "black_acrylic" | "yellow_reflective";
   size?: "sm" | "md" | "lg";
 }
@@ -19,174 +20,124 @@ interface PlateGraphicProps {
 export default function PlateGraphic({
   metroCity = "ঢাকা মেট্রো",
   vehicleClass = "ল",
-  seriesNumber = "১১",
-  plateNumber = "১২৩৪",
+  seriesNumber = "১২",
+  plateNumber = "৩৪৫৬",
   fullPlateText,
   rawInput,
-  plateType = "front",
   vehicleType = "motorcycle",
+  hasBorder = true,
   color = "white_reflective",
-  size = "md",
+  size = "lg",
 }: PlateGraphicProps) {
   const isScooter = vehicleType === "scooter";
   const isBlackAcrylic = color === "black_acrylic";
   const isYellow = color === "yellow_reflective";
 
+  // Compute text segments reactively
+  let city = metroCity?.trim() || "";
+  let vClass = vehicleClass?.trim() || "";
+  let series = seriesNumber?.trim() || "";
+  let pNum = plateNumber?.trim() || "";
+
+  // If rawInput or fullPlateText is provided and field values are empty, parse it
+  const incoming = (rawInput?.trim() || fullPlateText?.trim() || "");
+  if (incoming && (!city || !vClass || !series || !pNum)) {
+    const parsed = parseQuickPlateString(incoming);
+    if (!city && parsed.metroCity) city = parsed.metroCity;
+    if (!vClass && parsed.vehicleClass) vClass = parsed.vehicleClass;
+    if (!series && parsed.seriesNumber) series = parsed.seriesNumber;
+    if (!pNum && parsed.plateNumber) pNum = parsed.plateNumber;
+  }
+
+  // Fallbacks for display preview if still empty (as stated in reference: "নম্বর পূরণ না হওয়া পর্যন্ত নমুনা দেখাচ্ছে")
+  const displayCity = city || "ঢাকা মেট্রো";
+  const displayClass = vClass || "ল";
+  const displaySeries = convertToBengaliDigits(series || "১২");
+  const displayNumber = convertToBengaliDigits(pNum || "৩৪৫৬");
+
   // Official BRTA Circular Dimensions:
-  // 1. Motorcycle (স্কুটি ব্যতীত অন্যান্য মোটরসাইকেল): দৈর্ঘ্য ২৮৫ মি.মি. × প্রস্থ ৫০ মি.মি. (Aspect ratio: 285 / 50 = 5.7 : 1, একক আনুভূমিক সারি)
-  // 2. Scooter (মোটরসাইকেল - স্কুটি/স্কুটার): দৈর্ঘ্য ২০০ মি.মি. × প্রস্থ ১০০ মি.মি. (Aspect ratio: 200 / 100 = 2 : 1, দ্বি-সারি পরিমাপ)
+  // Motorcycle: 285 × 50 mm (Aspect ratio: 285 / 50 = 5.7 : 1)
+  // Scooter: 200 × 100 mm (Aspect ratio: 200 / 100 = 2 : 1)
   const containerSizes = isScooter
     ? {
-        sm: "w-full max-w-[200px] aspect-[2/1] p-2",
-        md: "w-full max-w-[260px] aspect-[2/1] p-2.5",
-        lg: "w-full max-w-[320px] aspect-[2/1] p-3",
+        sm: "w-full max-w-[190px] aspect-[200/100]",
+        md: "w-full max-w-[240px] aspect-[200/100]",
+        lg: "w-full max-w-[280px] sm:max-w-[300px] aspect-[200/100]",
       }[size]
     : {
-        sm: "w-full max-w-[340px] aspect-[285/50] px-2 min-[360px]:px-2.5",
-        md: "w-full max-w-[480px] aspect-[285/50] px-2.5 sm:px-4",
-        lg: "w-full max-w-[570px] aspect-[285/50] px-3 sm:px-5",
+        sm: "w-full max-w-[320px] aspect-[285/50]",
+        md: "w-full max-w-[440px] aspect-[285/50]",
+        lg: "w-full max-w-[480px] sm:max-w-[520px] aspect-[285/50]",
       }[size];
 
   const fontSizes = isScooter
     ? {
-        sm: "text-xs sm:text-sm font-black",
-        md: "text-sm sm:text-lg md:text-xl font-black",
-        lg: "text-base sm:text-xl md:text-2xl font-black",
+        sm: "text-xs sm:text-sm font-extrabold leading-tight",
+        md: "text-base sm:text-lg md:text-xl font-extrabold leading-tight",
+        lg: "text-lg sm:text-2xl md:text-3xl font-extrabold leading-tight",
       }[size]
     : {
-        sm: "text-[10px] min-[360px]:text-xs sm:text-sm font-black tracking-tight",
-        md: "text-xs min-[360px]:text-sm sm:text-base md:text-lg lg:text-xl font-black tracking-tight sm:tracking-normal",
-        lg: "text-xs min-[360px]:text-sm sm:text-lg md:text-xl lg:text-2xl font-black tracking-tight sm:tracking-normal",
+        sm: "text-[11px] min-[360px]:text-xs sm:text-sm md:text-base font-extrabold tracking-tight",
+        md: "text-xs min-[360px]:text-sm sm:text-base md:text-lg font-extrabold tracking-tight",
+        lg: "text-xs min-[360px]:text-sm sm:text-lg md:text-xl lg:text-2xl font-extrabold tracking-tight",
       }[size];
 
+  const singleLineText = `${displayCity}-${displayClass}-${displaySeries}-${displayNumber}`;
+
   return (
-    <div className="w-full flex flex-col items-center justify-center select-none py-1">
-      {/* Real Plate Container */}
+    <div className="w-full flex items-center justify-center select-none py-1">
+      {/* Plate Outer Body (Clean White, Rounded Corners) */}
       <div
-        className={`w-full ${containerSizes} rounded-xl relative flex items-center justify-center transition-all duration-300 shadow-[0_10px_25px_rgba(0,0,0,0.4)] ${
+        className={`${containerSizes} rounded-md sm:rounded-lg relative flex items-center justify-center transition-all duration-300 shadow-[0_4px_20px_rgba(0,0,0,0.35)] p-1 sm:p-1.5 ${
           isBlackAcrylic
-            ? "bg-[#0a0a0a] border-2 border-neutral-700"
+            ? "bg-[#0a0a0a]"
             : isYellow
-            ? "bg-[#ffb703] border-2 border-neutral-900"
-            : "bg-white border-2 border-neutral-900"
+            ? "bg-[#ffb703]"
+            : "bg-white"
         }`}
       >
-        {/* Left Mounting Screw */}
-        <div className="absolute left-2.5 top-1/2 -translate-y-1/2 w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-neutral-300 border border-neutral-600 shadow-inner flex items-center justify-center z-20">
-          <div className="w-1.5 h-0.5 bg-neutral-700 transform rotate-45" />
-        </div>
-
-        {/* Right Mounting Screw */}
-        <div className="absolute right-2.5 top-1/2 -translate-y-1/2 w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-neutral-300 border border-neutral-600 shadow-inner flex items-center justify-center z-20">
-          <div className="w-1.5 h-0.5 bg-neutral-700 transform rotate-45" />
-        </div>
-
-        {/* Inner Double Border Rectangle Frame */}
+        {/* Inner Border Frame (if hasBorder is true) */}
         <div
-          className={`w-full h-full rounded-lg border-2 flex items-center justify-center px-4 relative overflow-hidden ${
-            isBlackAcrylic
-              ? "border-white bg-[#050505]"
-              : isYellow
-              ? "border-neutral-950 bg-[#ffb703]"
-              : "border-neutral-950 bg-white"
+          className={`w-full h-full rounded-xs sm:rounded flex items-center justify-center px-2 sm:px-3 text-center overflow-hidden transition-all ${
+            hasBorder
+              ? isBlackAcrylic
+                ? "border-[2px] sm:border-[2.5px] border-white"
+                : isYellow
+                ? "border-[2px] sm:border-[2.5px] border-neutral-950"
+                : "border-[2px] sm:border-[2.5px] border-neutral-950"
+              : "border-0"
           }`}
         >
-          {/* Subtle Reflective Sheen Highlight */}
-          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/15 to-transparent pointer-events-none transform -skew-x-12" />
-
-          {/* Plate Text Rendering */}
-          {(() => {
-            const input = rawInput?.trim() || fullPlateText?.trim() || "";
-            const hasLegacyFields = Boolean(metroCity || vehicleClass || seriesNumber || plateNumber);
-            const legacyFallback = hasLegacyFields
-              ? `${metroCity || "ঢাকা মেট্রো"} ${vehicleClass || "ল"} ${seriesNumber || "১১"} ${plateNumber || "১২৩৪"}`
-              : "ঢাকা মেট্রো-ল-১১-১২৩৪";
-
-            const data = getPlateDisplaySegments(input || legacyFallback);
-
-            if (isScooter) {
-              const line1 = data.isStructured
-                ? [data.city, data.vehicleClass].filter(Boolean).join(" - ")
-                : (data.rawText?.split("-")[0]?.trim() || "ঢাকা মেট্রো - ল");
-              const line2 = data.isStructured
-                ? [data.series, data.number].filter(Boolean).join(" - ")
-                : (data.rawText?.split("-").slice(1).join(" - ")?.trim() || "১১ - ১২৩৪");
-
-              return (
-                <div className="flex flex-col items-center justify-center text-center z-10 leading-tight">
-                  <div
-                    className={`${fontSizes} ${
-                      isBlackAcrylic ? "text-white" : "text-neutral-950"
-                    } whitespace-nowrap`}
-                  >
-                    {line1 || "ঢাকা মেট্রো - ল"}
-                  </div>
-                  {line2 && (
-                    <div
-                      className={`${fontSizes} font-mono ${
-                        isBlackAcrylic ? "text-white" : "text-neutral-950"
-                      } whitespace-nowrap mt-0.5`}
-                    >
-                      {line2}
-                    </div>
-                  )}
-                </div>
-              );
-            }
-
-            // Single-Line Layout for Motorcycle (285 x 50 mm)
-            if (data.isStructured) {
-              const segments = [
-                { text: data.city, isNumber: false },
-                { text: data.vehicleClass, isNumber: false },
-                { text: data.series, isNumber: true },
-                { text: data.number, isNumber: true },
-              ].filter((s) => s.text && s.text.trim().length > 0) as {
-                text: string;
-                isNumber: boolean;
-              }[];
-
-              return (
-                <div className="flex items-center justify-center whitespace-nowrap text-nowrap flex-nowrap z-10 gap-1 sm:gap-2 font-bold">
-                  {segments.map((seg, idx) => (
-                    <React.Fragment key={idx}>
-                      {idx > 0 && (
-                        <span
-                          className={`font-bold ${
-                            isBlackAcrylic ? "text-neutral-400" : "text-neutral-700"
-                          }`}
-                        >
-                          -
-                        </span>
-                      )}
-                      <span
-                        className={`${fontSizes} ${
-                          seg.isNumber ? "font-mono" : ""
-                        } ${isBlackAcrylic ? "text-white" : "text-neutral-950"}`}
-                      >
-                        {seg.text}
-                      </span>
-                    </React.Fragment>
-                  ))}
-                </div>
-              );
-            }
-
-            // Fallback for custom raw text
-            return (
-              <div className="flex items-center justify-center whitespace-nowrap text-nowrap flex-nowrap z-10 gap-1 sm:gap-2 font-bold">
-                <span
-                  className={`${fontSizes} ${
-                    isBlackAcrylic ? "text-white" : "text-neutral-950"
-                  }`}
-                >
-                  {data.rawText || "ঢাকা মেট্রো - ল - ১১ - ১২৩৪"}
-                </span>
-              </div>
-            );
-          })()}
-
-          {/* Official Compliant Surface (No external ads or decorative watermarks) */}
+          {isScooter ? (
+            /* Scooter 2-Line Layout (200 × 100 mm) */
+            <div className="flex flex-col items-center justify-center text-center leading-tight">
+              <span
+                className={`${fontSizes} ${
+                  isBlackAcrylic ? "text-white" : "text-neutral-950"
+                } whitespace-nowrap`}
+              >
+                {displayCity}-{displayClass}
+              </span>
+              <span
+                className={`${fontSizes} font-mono ${
+                  isBlackAcrylic ? "text-white" : "text-neutral-950"
+                } whitespace-nowrap mt-0.5 sm:mt-1`}
+              >
+                {displaySeries}-{displayNumber}
+              </span>
+            </div>
+          ) : (
+            /* Motorcycle 1-Line Layout (285 × 50 mm) */
+            <div className="flex items-center justify-center text-center whitespace-nowrap">
+              <span
+                className={`${fontSizes} ${
+                  isBlackAcrylic ? "text-white" : "text-neutral-950"
+                } whitespace-nowrap font-sans font-extrabold`}
+              >
+                {singleLineText}
+              </span>
+            </div>
+          )}
         </div>
       </div>
     </div>

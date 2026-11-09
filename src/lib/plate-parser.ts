@@ -101,6 +101,18 @@ const LETTER_LOOKUP: Record<string, string> = {
   s: "স",
 };
 
+export function convertToBengaliLetter(input: string): string {
+  const clean = input.trim().toLowerCase();
+  if (LETTER_LOOKUP[clean]) {
+    return LETTER_LOOKUP[clean];
+  }
+  const bMatch = input.match(/[কখগঘঙচছজঝটঠডঢণতথদধনপফবভমযরলশষসহড়ঢ়য়]/);
+  if (bMatch) {
+    return bMatch[0];
+  }
+  return input;
+}
+
 export function parseQuickPlateString(raw: string): {
   metroCity?: string;
   vehicleClass?: string;

@@ -23,12 +23,14 @@ export default function HomeClient({
   const [customDetails, setCustomDetails] = useState<CustomPlateDetails>({
     plateType: "front",
     vehicleType: "motorcycle",
-    metroCity: "ঢাকা মেট্রো",
-    vehicleClass: "ল",
-    seriesNumber: "১১",
-    plateNumber: "১২৩৪",
-    fullPlateText: "ঢাকা মেট্রো-ল-১১-১২৩৪",
+    metroCity: "",
+    vehicleClass: "",
+    seriesNumber: "",
+    plateNumber: "",
+    fullPlateText: "",
     plateColor: "white_reflective",
+    hasBorder: true,
+    quantity: 1,
   });
 
   const scrollToCheckout = () => {

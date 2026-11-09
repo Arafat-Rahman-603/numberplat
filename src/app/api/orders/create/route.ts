@@ -19,12 +19,14 @@ const orderInputSchema = z.object({
   customDetails: z.object({
     plateType: z.enum(["front", "back", "both"]),
     vehicleType: z.enum(["motorcycle", "scooter"]).optional(),
-    metroCity: z.string().min(1),
-    vehicleClass: z.string().min(1),
-    seriesNumber: z.string().min(1),
-    plateNumber: z.string().min(1),
+    metroCity: z.string().optional().default(""),
+    vehicleClass: z.string().optional().default(""),
+    seriesNumber: z.string().optional().default(""),
+    plateNumber: z.string().optional().default(""),
     fullPlateText: z.string().min(1),
     plateColor: z.enum(["black_acrylic", "white_reflective", "yellow_reflective"]).optional(),
+    hasBorder: z.boolean().optional(),
+    quantity: z.number().optional(),
   }),
   paymentMethod: z.enum(["cod", "bkash_advance", "bkash_full"]),
   customAdvanceAmount: z.number().optional(),
@@ -50,8 +52,10 @@ export async function POST(req: NextRequest) {
     const settings = getSettings();
 
     // Calculate product price server-side (prevent frontend price manipulation)
-    const unitPrice = getProductPrice(data.plateType, settings);
-    const quantity = 1;
+    const basePrice = getProductPrice(data.plateType, settings);
+    const scooterExtra = data.customDetails.vehicleType === "scooter" ? 50 : 0;
+    const unitPrice = basePrice + scooterExtra;
+    const quantity = Math.max(1, data.customDetails.quantity || 1);
     const originalSubtotal = unitPrice * quantity;
 
     // Calculate validated pricing, discount, and remaining COD amount

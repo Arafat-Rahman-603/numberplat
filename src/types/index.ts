@@ -31,6 +31,8 @@ export interface CustomPlateDetails {
   plateNumber: string;
   fullPlateText: string;
   plateColor?: "black_acrylic" | "white_reflective" | "yellow_reflective";
+  hasBorder?: boolean;
+  quantity?: number;
 }
 
 export interface OrderItem {

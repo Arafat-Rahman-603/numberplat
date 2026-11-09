@@ -117,13 +117,16 @@ export default function CheckoutSection({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
-  // Determine subtotal based on selected plate type
-  const currentSubtotal =
+  // Determine subtotal based on selected plate type, vehicle type, and quantity
+  const basePrice =
     customDetails.plateType === "both"
       ? comboPlatePrice
       : customDetails.plateType === "back"
       ? backPlatePrice
       : frontPlatePrice;
+  const scooterExtra = customDetails.vehicleType === "scooter" ? 50 : 0;
+  const quantity = Math.max(1, customDetails.quantity || 1);
+  const currentSubtotal = (basePrice + scooterExtra) * quantity;
 
   // Real-time calculation
   const pricing = calculateOrderPricing({
@@ -182,6 +185,28 @@ export default function CheckoutSection({
       return;
     }
 
+    const effectivePlateText =
+      customDetails.fullPlateText?.trim() ||
+      [
+        customDetails.metroCity?.trim(),
+        customDetails.vehicleClass?.trim(),
+        customDetails.seriesNumber?.trim(),
+        customDetails.plateNumber?.trim(),
+      ]
+        .filter(Boolean)
+        .join("-") ||
+      "ঢাকা মেট্রো-ল-১২-৩৪৫৬";
+
+    const payloadCustomDetails = {
+      ...customDetails,
+      fullPlateText: effectivePlateText,
+      metroCity: customDetails.metroCity || "ঢাকা মেট্রো",
+      vehicleClass: customDetails.vehicleClass || "ল",
+      seriesNumber: customDetails.seriesNumber || "১২",
+      plateNumber: customDetails.plateNumber || "৩৪৫৬",
+      quantity: Math.max(1, customDetails.quantity || 1),
+    };
+
     setIsSubmitting(true);
 
     try {
@@ -196,7 +221,7 @@ export default function CheckoutSection({
           district,
           notes: notes.trim(),
           plateType: customDetails.plateType,
-          customDetails,
+          customDetails: payloadCustomDetails,
           paymentMethod,
           customAdvanceAmount: customAdvance,
         }),
@@ -348,7 +373,7 @@ export default function CheckoutSection({
                 <span className="text-neutral-600">প্লেটের খোদাইকৃত নম্বর:</span>
                 <div className="flex items-center gap-2">
                   <span className="font-mono font-bold text-neutral-900 bg-white px-2.5 py-1 rounded border border-neutral-200 break-all text-center sm:text-right">
-                    {customDetails.fullPlateText}
+                    {customDetails.fullPlateText || "ঢাকা মেট্রো-ল-১২-৩৪৫৬"}
                   </span>
                   <a
                     href="#customizer"
