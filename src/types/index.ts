@@ -24,6 +24,7 @@ export type DeliveryZone = "inside_dhaka" | "outside_dhaka";
 
 export interface CustomPlateDetails {
   plateType: PlateType;
+  vehicleType?: "motorcycle" | "scooter";
   metroCity: string;
   vehicleClass: string;
   seriesNumber: string;

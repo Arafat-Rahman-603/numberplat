@@ -104,11 +104,11 @@ export default function HeroSection({
               <div className="py-2 w-full flex justify-center">
                 <PlateGraphic
                   metroCity="ঢাকা মেট্রো"
-                  vehicleClass="হ"
+                  vehicleClass="ল"
                   seriesNumber="১২"
                   plateNumber="৩৪৫৬"
                   plateType="front"
-                  color="black_acrylic"
+                  color="white_reflective"
                   size="md"
                 />
               </div>

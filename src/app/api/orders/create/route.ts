@@ -18,6 +18,7 @@ const orderInputSchema = z.object({
   plateType: z.enum(["front", "back", "both"]),
   customDetails: z.object({
     plateType: z.enum(["front", "back", "both"]),
+    vehicleType: z.enum(["motorcycle", "scooter"]).optional(),
     metroCity: z.string().min(1),
     vehicleClass: z.string().min(1),
     seriesNumber: z.string().min(1),

@@ -8,158 +8,179 @@ interface PlateGraphicProps {
   seriesNumber: string;
   plateNumber: string;
   plateType?: "front" | "back" | "both";
-  color?: "black_acrylic" | "white_reflective" | "yellow_reflective";
+  vehicleType?: "motorcycle" | "scooter";
+  color?: "white_reflective" | "black_acrylic" | "yellow_reflective";
   size?: "sm" | "md" | "lg";
 }
 
 export default function PlateGraphic({
   metroCity = "ঢাকা মেট্রো",
-  vehicleClass = "হ",
+  vehicleClass = "ল",
   seriesNumber = "১২",
   plateNumber = "৩৪৫৬",
   plateType = "front",
-  color = "black_acrylic",
+  vehicleType = "motorcycle",
+  color = "white_reflective",
   size = "md",
 }: PlateGraphicProps) {
-  // Styles based on color selection
+  const isScooter = vehicleType === "scooter";
   const isBlackAcrylic = color === "black_acrylic";
   const isYellow = color === "yellow_reflective";
 
-  // Size configurations maintaining exact motorcycle plate ratio without wrapping
-  const containerSizes = {
-    sm: "max-w-[300px] h-[56px] px-3",
-    md: "max-w-[440px] h-[74px] sm:h-[84px] px-4",
-    lg: "max-w-[560px] h-[84px] sm:h-[96px] px-5 sm:px-6",
-  }[size];
+  // Motorcycle: 285 x 50 mm (single line)
+  // Scooter: 200 x 100 mm (two lines)
+  const containerSizes = isScooter
+    ? {
+        sm: "max-w-[200px] h-[100px] p-2",
+        md: "max-w-[280px] h-[140px] p-3",
+        lg: "max-w-[340px] h-[170px] p-3.5",
+      }[size]
+    : {
+        sm: "max-w-[340px] h-[60px] px-2.5",
+        md: "max-w-[500px] h-[82px] sm:h-[88px] px-4",
+        lg: "max-w-[620px] h-[96px] sm:h-[106px] px-5 sm:px-6",
+      }[size];
 
-  const fontSizes = {
-    sm: "text-xs sm:text-sm font-black tracking-tight",
-    md: "text-sm sm:text-base md:text-lg font-black tracking-normal",
-    lg: "text-base sm:text-xl md:text-2xl font-black tracking-wide",
-  }[size];
+  const fontSizes = isScooter
+    ? {
+        sm: "text-sm font-black",
+        md: "text-lg sm:text-xl font-black",
+        lg: "text-xl sm:text-2xl font-black",
+      }[size]
+    : {
+        sm: "text-xs sm:text-sm font-black tracking-normal",
+        md: "text-sm sm:text-base md:text-xl lg:text-2xl font-black tracking-normal",
+        lg: "text-base sm:text-xl md:text-2xl lg:text-3xl font-black tracking-wide",
+      }[size];
 
   return (
-    <div className="w-full flex flex-col items-center justify-center select-none py-2">
-      {/* 3D Acrylic Mudguard Number Plate */}
+    <div className="w-full flex flex-col items-center justify-center select-none py-1">
+      {/* Real Plate Container */}
       <div
-        className={`w-full ${containerSizes} rounded-2xl relative flex items-center justify-center transition-all duration-300 shadow-[0_12px_35px_rgba(0,0,0,0.85),0_2px_4px_rgba(255,255,255,0.1)_inset] ${
+        className={`w-full ${containerSizes} rounded-xl relative flex items-center justify-center transition-all duration-300 shadow-[0_10px_25px_rgba(0,0,0,0.4)] ${
           isBlackAcrylic
-            ? "bg-gradient-to-b from-[#181818] via-[#0d0d0d] to-[#050505] border-[3px] border-neutral-700"
+            ? "bg-[#0a0a0a] border-2 border-neutral-700"
             : isYellow
-            ? "bg-gradient-to-b from-amber-300 via-amber-400 to-amber-500 border-[3px] border-neutral-900"
-            : "bg-gradient-to-b from-neutral-100 via-neutral-200 to-white border-[3px] border-neutral-800"
+            ? "bg-[#ffb703] border-2 border-neutral-900"
+            : "bg-white border-2 border-neutral-900"
         }`}
       >
         {/* Left Mounting Screw */}
-        <div className="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full bg-gradient-to-br from-neutral-400 via-neutral-600 to-neutral-800 border border-neutral-500 shadow-inner flex items-center justify-center z-20">
-          <div className="w-2 h-0.5 bg-neutral-900 transform rotate-45" />
+        <div className="absolute left-2.5 top-1/2 -translate-y-1/2 w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-neutral-300 border border-neutral-600 shadow-inner flex items-center justify-center z-20">
+          <div className="w-1.5 h-0.5 bg-neutral-700 transform rotate-45" />
         </div>
 
         {/* Right Mounting Screw */}
-        <div className="absolute right-3 top-1/2 -translate-y-1/2 w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full bg-gradient-to-br from-neutral-400 via-neutral-600 to-neutral-800 border border-neutral-500 shadow-inner flex items-center justify-center z-20">
-          <div className="w-2 h-0.5 bg-neutral-900 transform rotate-45" />
+        <div className="absolute right-2.5 top-1/2 -translate-y-1/2 w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-neutral-300 border border-neutral-600 shadow-inner flex items-center justify-center z-20">
+          <div className="w-1.5 h-0.5 bg-neutral-700 transform rotate-45" />
         </div>
 
-        {/* Inner Border / Reflective Strip */}
+        {/* Inner Double Border Rectangle Frame */}
         <div
-          className={`w-full h-[84%] rounded-xl flex items-center justify-center px-4 relative overflow-hidden ${
+          className={`w-full h-full rounded-lg border-2 flex items-center justify-center px-4 relative overflow-hidden ${
             isBlackAcrylic
-              ? "border-2 border-white/90 bg-black/60 shadow-[inset_0_0_12px_rgba(255,255,255,0.15)]"
+              ? "border-white bg-[#050505]"
               : isYellow
-              ? "border-2 border-neutral-950 bg-amber-400/80 shadow-[inset_0_0_10px_rgba(0,0,0,0.15)]"
-              : "border-2 border-neutral-950 bg-white/90 shadow-[inset_0_0_10px_rgba(0,0,0,0.1)]"
+              ? "border-neutral-950 bg-[#ffb703]"
+              : "border-neutral-950 bg-white"
           }`}
         >
-          {/* Light Reflection Glare Sheen */}
-          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/20 to-transparent pointer-events-none transform -skew-x-12" />
+          {/* Subtle Reflective Sheen Highlight */}
+          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/15 to-transparent pointer-events-none transform -skew-x-12" />
 
-          {/* Exact One-Line Bengali Plate Text (Strictly No Wrap) */}
-          <div className="flex items-center justify-center whitespace-nowrap text-nowrap flex-nowrap z-10 gap-1.5 sm:gap-2.5 font-bold">
-            <span
-              className={`${fontSizes} font-black ${
-                isBlackAcrylic
-                  ? "text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.7)]"
-                  : "text-neutral-950"
-              }`}
-            >
-              {metroCity || "ঢাকা মেট্রো"}
-            </span>
+          {/* Plate Text Rendering */}
+          {isScooter ? (
+            /* 2-Line Layout for Scooter (200 x 100 mm) */
+            <div className="flex flex-col items-center justify-center text-center z-10 leading-tight">
+              <div
+                className={`${fontSizes} ${
+                  isBlackAcrylic ? "text-white" : "text-neutral-950"
+                } whitespace-nowrap`}
+              >
+                <span>{metroCity || "ঢাকা মেট্রো"}</span>
+                <span className="mx-1 text-neutral-400">-</span>
+                <span>{vehicleClass || "ল"}</span>
+              </div>
+              <div
+                className={`${fontSizes} font-mono ${
+                  isBlackAcrylic ? "text-white" : "text-neutral-950"
+                } whitespace-nowrap mt-0.5`}
+              >
+                <span>{seriesNumber || "১২"}</span>
+                <span className="mx-1 text-neutral-400">-</span>
+                <span>{plateNumber || "৩৪৫৬"}</span>
+              </div>
+            </div>
+          ) : (
+            /* Single-Line Layout for Motorcycle (285 x 50 mm) */
+            <div className="flex items-center justify-center whitespace-nowrap text-nowrap flex-nowrap z-10 gap-1 sm:gap-2 font-bold">
+              <span
+                className={`${fontSizes} ${
+                  isBlackAcrylic ? "text-white" : "text-neutral-950"
+                }`}
+              >
+                {metroCity || "ঢাকা মেট্রো"}
+              </span>
 
-            <span
-              className={`font-bold ${
-                isBlackAcrylic ? "text-neutral-400" : "text-neutral-600"
-              }`}
-            >
-              -
-            </span>
+              <span
+                className={`font-bold ${
+                  isBlackAcrylic ? "text-neutral-400" : "text-neutral-700"
+                }`}
+              >
+                -
+              </span>
 
-            <span
-              className={`${fontSizes} font-black ${
-                isBlackAcrylic
-                  ? "text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.7)]"
-                  : "text-neutral-950"
-              }`}
-            >
-              {vehicleClass || "হ"}
-            </span>
+              <span
+                className={`${fontSizes} ${
+                  isBlackAcrylic ? "text-white" : "text-neutral-950"
+                }`}
+              >
+                {vehicleClass || "ল"}
+              </span>
 
-            <span
-              className={`font-bold ${
-                isBlackAcrylic ? "text-neutral-400" : "text-neutral-600"
-              }`}
-            >
-              -
-            </span>
+              <span
+                className={`font-bold ${
+                  isBlackAcrylic ? "text-neutral-400" : "text-neutral-700"
+                }`}
+              >
+                -
+              </span>
 
-            <span
-              className={`${fontSizes} font-black font-mono ${
-                isBlackAcrylic
-                  ? "text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.7)]"
-                  : "text-neutral-950"
-              }`}
-            >
-              {seriesNumber || "১২"}
-            </span>
+              <span
+                className={`${fontSizes} font-mono ${
+                  isBlackAcrylic ? "text-white" : "text-neutral-950"
+                }`}
+              >
+                {seriesNumber || "১২"}
+              </span>
 
-            <span
-              className={`font-bold ${
-                isBlackAcrylic ? "text-neutral-400" : "text-neutral-600"
-              }`}
-            >
-              -
-            </span>
+              <span
+                className={`font-bold ${
+                  isBlackAcrylic ? "text-neutral-400" : "text-neutral-700"
+                }`}
+              >
+                -
+              </span>
 
-            <span
-              className={`${fontSizes} font-black font-mono tracking-wider ${
-                isBlackAcrylic
-                  ? "text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.7)]"
-                  : "text-neutral-950"
-              }`}
-            >
-              {plateNumber || "৩৪৫৬"}
-            </span>
-          </div>
+              <span
+                className={`${fontSizes} font-mono ${
+                  isBlackAcrylic ? "text-white" : "text-neutral-950"
+                }`}
+              >
+                {plateNumber || "৩৪৫৬"}
+              </span>
+            </div>
+          )}
 
           {/* Micro BRTA Watermark */}
           <div
-            className={`absolute right-2.5 bottom-1 text-[7px] sm:text-[8px] font-mono tracking-widest uppercase font-semibold pointer-events-none opacity-60 ${
+            className={`absolute right-2 bottom-0.5 text-[6px] sm:text-[7px] font-mono tracking-widest uppercase font-semibold pointer-events-none opacity-50 ${
               isBlackAcrylic ? "text-neutral-400" : "text-neutral-600"
             }`}
           >
-            BRTA STANDARD
+            BRTA
           </div>
         </div>
-      </div>
-
-      {/* Label under plate */}
-      <div className="text-center mt-3">
-        <span className="text-xs font-bold text-neutral-400 tracking-wider">
-          {plateType === "both"
-            ? "সামনে ও পেছনের প্লেট সেট (১০ x ২.২ ইঞ্চি)"
-            : plateType === "back"
-            ? "বাইকের পেছনের ব্যাকপ্লেট"
-            : "বাইকের সামনের মাডগার্ড প্লেট (১০ x ২.২ ইঞ্চি)"}
-        </span>
       </div>
     </div>
   );
