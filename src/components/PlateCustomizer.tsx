@@ -111,7 +111,7 @@ export default function PlateCustomizer({
           {/* =========================================
               LEFT COLUMN: ১ প্লেটের তথ্য
              ========================================= */}
-          <div className="lg:col-span-6 bg-white rounded-2xl p-6 sm:p-7 border border-neutral-200 shadow-sm space-y-6">
+          <div className="lg:col-span-6 bg-white rounded-2xl p-4 sm:p-6 md:p-7 border border-neutral-200 shadow-sm space-y-5 sm:space-y-6">
             {/* Step Header */}
             <div className="flex items-center gap-3 pb-3 border-b border-neutral-100">
               <span className="w-7 h-7 rounded-full bg-amber-100 text-amber-900 font-bold text-sm flex items-center justify-center font-mono">
@@ -226,12 +226,12 @@ export default function PlateCustomizer({
                   onChange={(e) => setQuickInput(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleQuickParse()}
                   placeholder="Dhaka Metro LA 12 3456"
-                  className="flex-1 px-4 py-2.5 bg-neutral-50 border border-neutral-300 rounded-lg text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-amber-500 focus:bg-white font-mono"
+                  className="flex-1 min-w-0 px-3 sm:px-4 py-2 sm:py-2.5 bg-neutral-50 border border-neutral-300 rounded-lg text-xs sm:text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-amber-500 focus:bg-white font-mono"
                 />
                 <button
                   type="button"
                   onClick={handleQuickParse}
-                  className="bg-amber-400 hover:bg-amber-300 text-neutral-950 font-bold px-6 py-2.5 rounded-lg text-sm transition shadow-xs whitespace-nowrap"
+                  className="bg-amber-400 hover:bg-amber-300 text-neutral-950 font-bold px-4 sm:px-6 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm transition shadow-xs whitespace-nowrap shrink-0"
                 >
                   বসিয়ে দিন
                 </button>
@@ -368,7 +368,7 @@ export default function PlateCustomizer({
           {/* =========================================
               RIGHT COLUMN: ২ আপনার প্লেট দেখতে এমন হবে
              ========================================= */}
-          <div className="lg:col-span-6 bg-white rounded-2xl p-6 sm:p-7 border border-neutral-200 shadow-sm flex flex-col justify-between">
+          <div className="lg:col-span-6 bg-white rounded-2xl p-4 sm:p-6 md:p-7 border border-neutral-200 shadow-sm flex flex-col justify-between">
             <div>
               {/* Step Header */}
               <div className="flex items-center gap-3 pb-3 border-b border-neutral-100 mb-4">
@@ -390,7 +390,7 @@ export default function PlateCustomizer({
                   `,
                   backgroundSize: "22px 22px",
                 }}
-                className="w-full rounded-2xl p-6 sm:p-12 flex flex-col items-center justify-center relative min-h-[200px] sm:min-h-[240px] shadow-inner border border-neutral-800"
+                className="w-full rounded-2xl p-3 sm:p-8 md:p-12 flex flex-col items-center justify-center relative min-h-[170px] sm:min-h-[220px] shadow-inner border border-neutral-800"
               >
                 <PlateGraphic
                   metroCity={customDetails.metroCity}

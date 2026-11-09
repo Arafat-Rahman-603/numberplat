@@ -46,7 +46,7 @@ export default function DarkQuoteBanner({
 
           {/* Right: Transparent Price Breakdown Card */}
           <div className="lg:col-span-5">
-            <div className="bg-neutral-900/90 border border-neutral-800 rounded-3xl p-6 shadow-2xl relative">
+            <div className="bg-neutral-900/90 border border-neutral-800 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl relative">
               <div className="flex items-center justify-between mb-4 pb-3 border-b border-neutral-800">
                 <span className="text-xs font-bold text-amber-400 uppercase tracking-widest">
                   অগ্রিম অফার ক্যালকুলেশন

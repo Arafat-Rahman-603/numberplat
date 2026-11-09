@@ -177,12 +177,15 @@ export default function Navbar({
               <Truck className="w-4 h-4" />
               অর্ডার ট্র্যাকিং
             </Link>
-            <Link
-              href="/admin"
-              className="w-full text-left py-2 px-3 rounded-lg hover:bg-neutral-800 flex items-center gap-2 text-neutral-400"
-            >
-              অ্যাডমিন পোর্টাল
-            </Link>
+            <div className="pt-2 border-t border-neutral-800 flex items-center justify-between text-xs text-neutral-300 px-1">
+              <a href={`tel:${hotlinePhone}`} className="flex items-center gap-1.5 hover:text-amber-400">
+                <Phone className="w-3.5 h-3.5 text-amber-400" />
+                <span className="font-mono">{hotlinePhone}</span>
+              </a>
+              <Link href="/admin" className="text-neutral-400 hover:text-white">
+                অ্যাডমিন পোর্টাল
+              </Link>
+            </div>
           </div>
         )}
       </nav>

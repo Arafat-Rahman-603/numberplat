@@ -56,7 +56,7 @@ export default function HeroSection({
             <div className="pt-4 flex flex-wrap items-center gap-5">
               <button
                 onClick={onOrderClick}
-                className="bg-amber-400 hover:bg-amber-300 text-neutral-950 font-extrabold text-base sm:text-lg px-8 py-4 rounded-2xl transition shadow-[0_10px_25px_rgba(245,158,11,0.3)] hover:scale-[1.02] active:scale-[0.98] flex items-center gap-3"
+                className="w-full sm:w-auto bg-amber-400 hover:bg-amber-300 text-neutral-950 font-extrabold text-base sm:text-lg px-8 py-4 rounded-2xl transition shadow-[0_10px_25px_rgba(245,158,11,0.3)] hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3"
               >
                 <span>অর্ডার করতে চাই</span>
                 <ArrowRight className="w-5 h-5" />

@@ -244,7 +244,7 @@ export default function CheckoutSection({
           {/* Left Column: Customer details, Package & Payment Methods */}
           <div className="lg:col-span-7 space-y-6">
             {/* Step 1: Package Selection */}
-            <div className="bg-white rounded-3xl p-6 sm:p-8 border border-neutral-200 shadow-sm">
+            <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 border border-neutral-200 shadow-sm">
               <h3 className="font-bold text-base text-neutral-900 mb-3 flex items-center gap-2">
                 <span className="w-6 h-6 rounded-full bg-neutral-900 text-white text-xs flex items-center justify-center font-mono">
                   ১
@@ -353,7 +353,7 @@ export default function CheckoutSection({
             </div>
 
             {/* Step 2: Customer Information */}
-            <div className="bg-white rounded-3xl p-6 sm:p-8 border border-neutral-200 shadow-sm space-y-4">
+            <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 border border-neutral-200 shadow-sm space-y-4">
               <h3 className="font-bold text-base text-neutral-900 mb-1 flex items-center gap-2">
                 <span className="w-6 h-6 rounded-full bg-neutral-900 text-white text-xs flex items-center justify-center font-mono">
                   ২
@@ -396,11 +396,11 @@ export default function CheckoutSection({
                 <label className="text-xs font-semibold text-neutral-700 block mb-1.5">
                   ডেলিভারি এলাকা নির্বাচন করুন <span className="text-rose-500">*</span>
                 </label>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
                   <button
                     type="button"
                     onClick={() => handleZoneChange("inside_dhaka")}
-                    className={`py-2.5 px-3 rounded-xl text-xs font-bold border transition flex justify-between items-center ${
+                    className={`py-3 px-3.5 rounded-xl text-xs font-bold border transition flex justify-between items-center ${
                       deliveryZone === "inside_dhaka"
                         ? "border-amber-500 bg-amber-50 text-neutral-900 ring-1 ring-amber-500"
                         : "border-neutral-200 bg-neutral-50 text-neutral-600 hover:bg-neutral-100"
@@ -413,7 +413,7 @@ export default function CheckoutSection({
                   <button
                     type="button"
                     onClick={() => handleZoneChange("outside_dhaka")}
-                    className={`py-2.5 px-3 rounded-xl text-xs font-bold border transition flex justify-between items-center ${
+                    className={`py-3 px-3.5 rounded-xl text-xs font-bold border transition flex justify-between items-center ${
                       deliveryZone === "outside_dhaka"
                         ? "border-amber-500 bg-amber-50 text-neutral-900 ring-1 ring-amber-500"
                         : "border-neutral-200 bg-neutral-50 text-neutral-600 hover:bg-neutral-100"
@@ -473,7 +473,7 @@ export default function CheckoutSection({
             </div>
 
             {/* Step 3: Payment Method Selection */}
-            <div className="bg-white rounded-3xl p-6 sm:p-8 border border-neutral-200 shadow-sm space-y-4">
+            <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 border border-neutral-200 shadow-sm space-y-4">
               <h3 className="font-bold text-base text-neutral-900 mb-1 flex items-center gap-2">
                 <span className="w-6 h-6 rounded-full bg-neutral-900 text-white text-xs flex items-center justify-center font-mono">
                   ৩
@@ -631,7 +631,7 @@ export default function CheckoutSection({
 
           {/* Right Column: Dynamic Price Breakdown Card & Order Submit */}
           <div className="lg:col-span-5 sticky top-24">
-            <div className="bg-neutral-900 text-white rounded-3xl p-6 sm:p-7 border border-neutral-800 shadow-2xl space-y-5">
+            <div className="bg-neutral-900 text-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-7 border border-neutral-800 shadow-2xl space-y-5">
               <div className="flex items-center justify-between pb-3 border-b border-neutral-800">
                 <h3 className="font-bold text-base flex items-center gap-2">
                   <span className="w-2.5 h-2.5 rounded-full bg-amber-400" />

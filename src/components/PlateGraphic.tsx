@@ -43,14 +43,14 @@ export default function PlateGraphic({
 
   const fontSizes = isScooter
     ? {
-        sm: "text-sm font-black",
-        md: "text-lg sm:text-xl font-black",
-        lg: "text-xl sm:text-2xl font-black",
+        sm: "text-xs sm:text-sm font-black",
+        md: "text-sm sm:text-lg md:text-xl font-black",
+        lg: "text-base sm:text-xl md:text-2xl font-black",
       }[size]
     : {
-        sm: "text-xs sm:text-sm font-black tracking-normal",
-        md: "text-sm sm:text-base md:text-xl lg:text-2xl font-black tracking-normal",
-        lg: "text-base sm:text-xl md:text-2xl lg:text-3xl font-black tracking-wide",
+        sm: "text-[10px] min-[360px]:text-xs sm:text-sm font-black tracking-tight",
+        md: "text-xs min-[360px]:text-sm sm:text-base md:text-lg lg:text-xl font-black tracking-tight sm:tracking-normal",
+        lg: "text-xs min-[360px]:text-sm sm:text-lg md:text-xl lg:text-2xl font-black tracking-tight sm:tracking-normal",
       }[size];
 
   return (
