@@ -1,0 +1,13 @@
+{
+  "discountOfferEnabled": true,
+  "discountPercentage": 30,
+  "minAdvanceAmount": 100,
+  "shippingInsideDhaka": 70,
+  "shippingOutsideDhaka": 130,
+  "frontPlatePrice": 350,
+  "backPlatePrice": 400,
+  "comboPlatePrice": 650,
+  "hotlinePhone": "01700-000000",
+  "whatsappNumber": "+8801700000000",
+  "announcementText": "সারাদেশে ক্যাশ অন ডেলিভারি সুবিধা | ১০০ টাকা অগ্রিম পেমেন্টে নিশ্চিত ৩০% ছাড়!"
+}
