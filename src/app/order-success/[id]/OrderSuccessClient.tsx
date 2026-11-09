@@ -49,9 +49,9 @@ export default function OrderSuccessClient({
 
   return (
     <div className="min-h-screen bg-neutral-900 text-neutral-100 py-10 px-4">
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-2xl mx-auto space-y-5">
         {/* Status Card */}
-        <div className="bg-neutral-800 rounded-3xl p-6 sm:p-8 border border-neutral-700 shadow-xl mb-6 text-center">
+        <div className="bg-neutral-800 rounded-2xl sm:rounded-3xl p-5 sm:p-8 border border-neutral-700 shadow-xl text-center">
           {isFailed ? (
             <div className="inline-flex p-4 bg-rose-500/10 text-rose-400 rounded-full mb-4 border border-rose-500/20">
               <AlertTriangle className="w-12 h-12" />
@@ -96,7 +96,7 @@ export default function OrderSuccessClient({
 
         {/* Plate Preview Display */}
         {item && item.customDetails && (
-          <div className="bg-neutral-800 rounded-3xl p-6 border border-neutral-700 shadow-xl mb-6">
+          <div className="bg-neutral-800 rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-neutral-700 shadow-xl">
             <div className="flex items-center justify-between mb-4">
               <h2 className="font-bold text-base flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-amber-400" />
@@ -107,7 +107,7 @@ export default function OrderSuccessClient({
               </span>
             </div>
 
-            <div className="bg-black/90 p-4 sm:p-6 rounded-2xl border-2 border-neutral-700 flex flex-col items-center justify-center text-center shadow-inner">
+            <div className="bg-black/90 p-3 sm:p-6 rounded-xl sm:rounded-2xl border-2 border-neutral-700 flex flex-col items-center justify-center text-center shadow-inner overflow-hidden">
               <PlateGraphic
                 metroCity={item.customDetails.metroCity}
                 vehicleClass={item.customDetails.vehicleClass}
@@ -122,7 +122,7 @@ export default function OrderSuccessClient({
         )}
 
         {/* Pricing Summary Card */}
-        <div className="bg-neutral-800 rounded-3xl p-6 border border-neutral-700 shadow-xl mb-6">
+        <div className="bg-neutral-800 rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-neutral-700 shadow-xl">
           <h2 className="font-bold text-lg mb-4 flex items-center gap-2">
             <PackageCheck className="w-5 h-5 text-amber-400" />
             পেমেন্ট ও টাকার হিসাব
