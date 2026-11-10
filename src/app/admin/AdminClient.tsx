@@ -25,6 +25,9 @@ import {
   Lock,
   LogOut,
   Phone,
+  Copy,
+  Check,
+  FileSpreadsheet,
 } from "lucide-react";
 
 export default function AdminClient() {
@@ -52,6 +55,53 @@ export default function AdminClient() {
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
   const [saveSuccessMsg, setSaveSuccessMsg] = useState("");
+  const [copiedField, setCopiedField] = useState<string | null>(null);
+
+  const handleCopy = (text: string, fieldId: string) => {
+    if (!text) return;
+    try {
+      if (typeof navigator !== "undefined" && navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text);
+      } else {
+        const textarea = document.createElement("textarea");
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textarea);
+      }
+      setCopiedField(fieldId);
+      setTimeout(() => {
+        setCopiedField((prev) => (prev === fieldId ? null : prev));
+      }, 2000);
+    } catch (e) {
+      console.error("Copy failed", e);
+    }
+  };
+
+  const CopyButton = ({ text, id, label }: { text: string; id: string; label?: string }) => {
+    const isCopied = copiedField === id;
+    return (
+      <button
+        type="button"
+        onClick={() => handleCopy(text, id)}
+        className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[11px] bg-neutral-800/80 hover:bg-neutral-700 text-neutral-300 hover:text-white transition cursor-pointer shrink-0"
+        title={`${label || "কপি"} করুন`}
+      >
+        {isCopied ? (
+          <>
+            <Check className="w-3 h-3 text-emerald-400" />
+            <span className="text-[10px] text-emerald-400 font-semibold">কপি হয়েছে!</span>
+          </>
+        ) : (
+          <>
+            <Copy className="w-3 h-3" />
+            {label && <span className="text-[10px]">{label}</span>}
+          </>
+        )}
+      </button>
+    );
+  };
 
   useEffect(() => {
     setAuthMounted(true);
@@ -271,12 +321,21 @@ export default function AdminClient() {
             </Link>
 
             <a
-              href="/api/admin/export"
-              className="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-2 sm:px-2.5 py-1.5 rounded-lg transition flex items-center gap-1 shadow-xs"
-              title="CSV রিপোর্ট ডাউনলোড করুন"
+              href="/api/admin/export?format=xlsx"
+              className="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-2.5 sm:px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 shadow-xs cursor-pointer"
+              title="এক্সেল (.xlsx) ফরম্যাটে সমস্ত অর্ডার ডাউনলোড করুন"
+            >
+              <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-200" />
+              <span>Excel ডাউনলোড</span>
+            </a>
+
+            <a
+              href="/api/admin/export?format=csv"
+              className="text-xs bg-neutral-800 hover:bg-neutral-700 text-neutral-300 px-2 sm:px-2.5 py-1.5 rounded-lg transition flex items-center gap-1 cursor-pointer"
+              title="CSV ফরম্যাটে ডাউনলোড করুন"
             >
               <Download className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">CSV রিপোর্ট</span>
+              <span className="hidden min-[540px]:inline">CSV</span>
             </a>
 
             <button
@@ -463,11 +522,12 @@ export default function AdminClient() {
                     >
                       {/* Card Header: Order #, Date & View Details */}
                       <div className="flex items-center justify-between pb-2 border-b border-neutral-800/80">
-                        <div>
-                          <span className="font-mono font-bold text-amber-400 text-sm block">
+                        <div className="flex items-center gap-1.5">
+                          <span className="font-mono font-bold text-amber-400 text-sm">
                             {order.orderNumber}
                           </span>
-                          <span className="text-[10px] text-neutral-500">
+                          <CopyButton text={order.orderNumber} id={`order-m-${order.id}`} />
+                          <span className="text-[10px] text-neutral-500 ml-1">
                             {new Date(order.createdAt).toLocaleDateString("bn-BD")}
                           </span>
                         </div>
@@ -484,20 +544,31 @@ export default function AdminClient() {
                       <div className="grid grid-cols-2 gap-2 text-xs">
                         <div className="min-w-0">
                           <span className="text-[10px] text-neutral-500 block">গ্রাহকের নাম:</span>
-                          <span className="font-semibold text-white block truncate">{order.customerName}</span>
-                          <a
-                            href={`tel:${order.customerPhone}`}
-                            className="font-mono text-amber-400/90 text-[11px] inline-flex items-center gap-1 hover:underline mt-0.5"
-                          >
-                            <Phone className="w-2.5 h-2.5 shrink-0" />
-                            <span className="truncate">{order.customerPhone}</span>
-                          </a>
+                          <div className="flex items-center gap-1">
+                            <span className="font-semibold text-white truncate">{order.customerName}</span>
+                            <CopyButton text={order.customerName} id={`name-m-${order.id}`} />
+                          </div>
+                          <div className="flex items-center gap-1 mt-0.5">
+                            <a
+                              href={`tel:${order.customerPhone}`}
+                              className="font-mono text-amber-400/90 text-[11px] inline-flex items-center gap-1 hover:underline truncate"
+                            >
+                              <Phone className="w-2.5 h-2.5 shrink-0" />
+                              <span className="truncate">{order.customerPhone}</span>
+                            </a>
+                            <CopyButton text={order.customerPhone} id={`phone-m-${order.id}`} />
+                          </div>
                         </div>
                         <div className="min-w-0">
                           <span className="text-[10px] text-neutral-500 block">প্লেটের নম্বর:</span>
-                          <span className="font-mono font-bold text-white bg-neutral-950 px-2 py-0.5 rounded border border-neutral-800 text-[11px] inline-block truncate max-w-full">
-                            {item?.customDetails?.fullPlateText || "N/A"}
-                          </span>
+                          <div className="flex items-center gap-1">
+                            <span className="font-mono font-bold text-white bg-neutral-950 px-2 py-0.5 rounded border border-neutral-800 text-[11px] inline-block truncate max-w-full">
+                              {item?.customDetails?.fullPlateText || "N/A"}
+                            </span>
+                            {item?.customDetails?.fullPlateText && (
+                              <CopyButton text={item.customDetails.fullPlateText} id={`plate-m-${order.id}`} />
+                            )}
+                          </div>
                           <span className="text-[10px] text-neutral-400 block truncate mt-0.5">
                             {order.district}
                           </span>
@@ -607,21 +678,35 @@ export default function AdminClient() {
                         return (
                           <tr key={order.id} className="hover:bg-neutral-800/40 transition">
                             <td className="p-3.5 whitespace-nowrap">
-                              <span className="font-mono font-bold text-amber-400 block">
-                                {order.orderNumber}
-                              </span>
-                              <span className="text-[10px] text-neutral-500">
+                              <div className="flex items-center gap-1.5">
+                                <span className="font-mono font-bold text-amber-400">
+                                  {order.orderNumber}
+                                </span>
+                                <CopyButton text={order.orderNumber} id={`order-d-${order.id}`} />
+                              </div>
+                              <span className="text-[10px] text-neutral-500 block mt-0.5">
                                 {new Date(order.createdAt).toLocaleDateString("bn-BD")}
                               </span>
                             </td>
                             <td className="p-3.5 whitespace-nowrap">
-                              <span className="font-medium text-white block">{order.customerName}</span>
-                              <span className="font-mono text-neutral-400">{order.customerPhone}</span>
+                              <div className="flex items-center gap-1.5">
+                                <span className="font-medium text-white">{order.customerName}</span>
+                                <CopyButton text={order.customerName} id={`name-d-${order.id}`} />
+                              </div>
+                              <div className="flex items-center gap-1.5 mt-0.5">
+                                <span className="font-mono text-neutral-400">{order.customerPhone}</span>
+                                <CopyButton text={order.customerPhone} id={`phone-d-${order.id}`} />
+                              </div>
                             </td>
                             <td className="p-3.5 whitespace-nowrap">
-                              <span className="font-mono font-bold text-white bg-neutral-950 px-2 py-1 rounded border border-neutral-800 block text-center">
-                                {item?.customDetails?.fullPlateText || "N/A"}
-                              </span>
+                              <div className="flex items-center justify-center gap-1">
+                                <span className="font-mono font-bold text-white bg-neutral-950 px-2 py-1 rounded border border-neutral-800 text-center">
+                                  {item?.customDetails?.fullPlateText || "N/A"}
+                                </span>
+                                {item?.customDetails?.fullPlateText && (
+                                  <CopyButton text={item.customDetails.fullPlateText} id={`plate-d-${order.id}`} />
+                                )}
+                              </div>
                               <span className="text-[10px] text-neutral-400 mt-0.5 block text-center">
                                 {item?.plateType === "both" ? "সামনে+পেছনে" : item?.plateType === "back" ? "পেছনে" : "সামনে"}
                               </span>
@@ -990,11 +1075,14 @@ export default function AdminClient() {
         {/* Order Details Modal */}
         {selectedOrder && (
           <div className="fixed inset-0 bg-black/80 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 z-50">
-            <div className="bg-neutral-900 border border-neutral-800 rounded-2xl sm:rounded-3xl max-w-xl w-full p-4 sm:p-6 max-h-[90vh] overflow-y-auto shadow-2xl">
-              <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-neutral-800 mb-3 sm:mb-4">
-                <div>
+            <div className="bg-neutral-900 border border-neutral-800 rounded-2xl sm:rounded-3xl max-w-xl w-full p-4 sm:p-6 max-h-[90vh] overflow-y-auto shadow-2xl space-y-4">
+              <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-neutral-800">
+                <div className="flex items-center gap-2">
                   <h3 className="font-bold text-base sm:text-lg text-white">অর্ডার বিবরণী</h3>
-                  <span className="font-mono text-xs text-amber-400">{selectedOrder.orderNumber}</span>
+                  <div className="flex items-center gap-1 bg-neutral-950 px-2 py-0.5 rounded border border-neutral-800">
+                    <span className="font-mono text-xs text-amber-400 font-bold">{selectedOrder.orderNumber}</span>
+                    <CopyButton text={selectedOrder.orderNumber} id={`modal-order-${selectedOrder.id}`} />
+                  </div>
                 </div>
                 <button
                   onClick={() => setSelectedOrder(null)}
@@ -1004,34 +1092,106 @@ export default function AdminClient() {
                 </button>
               </div>
 
-              {/* Order Info */}
-              <div className="space-y-3 sm:space-y-4 text-xs">
-                <div className="bg-neutral-950 p-3 sm:p-4 rounded-xl border border-neutral-800">
-                  <p className="text-neutral-400 text-[11px] mb-1">কাস্টমার তথ্য:</p>
-                  <p className="text-sm font-semibold text-white">{selectedOrder.customerName}</p>
-                  <a
-                    href={`tel:${selectedOrder.customerPhone}`}
-                    className="font-mono text-amber-400 hover:underline inline-flex items-center gap-1 mt-0.5"
-                  >
-                    <Phone className="w-3 h-3" />
-                    <span>{selectedOrder.customerPhone}</span>
-                  </a>
-                  <p className="text-neutral-300 mt-1">{selectedOrder.deliveryAddress}, {selectedOrder.district}</p>
+              {/* Quick Action: Copy for Courier Booking (Steadfast, Pathao, RedX) */}
+              <button
+                type="button"
+                onClick={() =>
+                  handleCopy(
+                    `অর্ডার নং: ${selectedOrder.orderNumber}\nগ্রাহকের নাম: ${selectedOrder.customerName}\nমোবাইল নম্বর: ${selectedOrder.customerPhone}\nডেলিভারি ঠিকানা: ${selectedOrder.deliveryAddress}, ${selectedOrder.district}\nপ্লেটের লেখা: ${selectedOrder.items[0]?.customDetails.fullPlateText || ""}\nক্যাশ অন ডেলিভারি (COD): ৳${selectedOrder.remainingCodAmount}`,
+                    `modal-courier-${selectedOrder.id}`
+                  )
+                }
+                className="w-full bg-emerald-700/80 hover:bg-emerald-600 text-white font-bold py-2.5 px-3 rounded-xl text-xs transition flex items-center justify-center gap-2 border border-emerald-600/40 cursor-pointer shadow-xs"
+              >
+                {copiedField === `modal-courier-${selectedOrder.id}` ? (
+                  <>
+                    <Check className="w-4 h-4 text-emerald-300" />
+                    <span className="text-emerald-200">কুরিয়ার বুকিং টেক্সট কপি হয়েছে!</span>
+                  </>
+                ) : (
+                  <>
+                    <Copy className="w-3.5 h-3.5" />
+                    <span>📦 কুরিয়ার পার্সেল বুকিংয়ের জন্য সমস্ত তথ্য এক ক্লিকে কপি করুন</span>
+                  </>
+                )}
+              </button>
+
+              {/* Order Info Cards */}
+              <div className="space-y-3 text-xs">
+                {/* Customer Details */}
+                <div className="bg-neutral-950 p-3 sm:p-4 rounded-xl border border-neutral-800 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <p className="text-neutral-400 text-[11px] font-semibold">গ্রাহকের তথ্য</p>
+                    <CopyButton
+                      text={`${selectedOrder.customerName}\n${selectedOrder.customerPhone}\n${selectedOrder.deliveryAddress}, ${selectedOrder.district}`}
+                      id={`modal-cust-all-${selectedOrder.id}`}
+                      label="সব তথ্য কপি"
+                    />
+                  </div>
+                  
+                  <div className="flex items-center justify-between border-t border-neutral-900 pt-1.5">
+                    <span className="text-neutral-400">নাম:</span>
+                    <div className="flex items-center gap-1.5">
+                      <span className="font-semibold text-white">{selectedOrder.customerName}</span>
+                      <CopyButton text={selectedOrder.customerName} id={`modal-name-${selectedOrder.id}`} />
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <span className="text-neutral-400">মোবাইল:</span>
+                    <div className="flex items-center gap-1.5">
+                      <a
+                        href={`tel:${selectedOrder.customerPhone}`}
+                        className="font-mono text-amber-400 hover:underline inline-flex items-center gap-1"
+                      >
+                        <Phone className="w-3 h-3" />
+                        <span>{selectedOrder.customerPhone}</span>
+                      </a>
+                      <CopyButton text={selectedOrder.customerPhone} id={`modal-phone-${selectedOrder.id}`} />
+                    </div>
+                  </div>
+
+                  <div className="flex items-start justify-between gap-2">
+                    <span className="text-neutral-400 shrink-0">ঠিকানা:</span>
+                    <div className="flex items-start gap-1.5 text-right">
+                      <span className="text-neutral-300">{selectedOrder.deliveryAddress}, {selectedOrder.district}</span>
+                      <CopyButton
+                        text={`${selectedOrder.deliveryAddress}, ${selectedOrder.district}`}
+                        id={`modal-addr-${selectedOrder.id}`}
+                      />
+                    </div>
+                  </div>
+
                   {selectedOrder.notes && (
-                    <p className="text-amber-200 mt-1 italic">নোট: {selectedOrder.notes}</p>
+                    <div className="pt-1 border-t border-neutral-900 text-amber-200/90 italic">
+                      নোট: {selectedOrder.notes}
+                    </div>
                   )}
                 </div>
 
-                <div className="bg-neutral-950 p-3 sm:p-4 rounded-xl border border-neutral-800">
-                  <p className="text-neutral-400 text-[11px] mb-1">কাস্টমাইজড প্লেটের লেখা:</p>
-                  <p className="text-base font-bold text-amber-400 font-mono">
-                    {selectedOrder.items[0]?.customDetails.fullPlateText}
-                  </p>
-                  <p className="text-neutral-400 mt-1 text-[11px]">
-                    প্যাকেজ: {selectedOrder.items[0]?.name}
-                  </p>
+                {/* Plate Details */}
+                <div className="bg-neutral-950 p-3 sm:p-4 rounded-xl border border-neutral-800 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <p className="text-neutral-400 text-[11px] font-semibold">কাস্টমাইজড প্লেটের লেখা</p>
+                    {selectedOrder.items[0]?.customDetails.fullPlateText && (
+                      <CopyButton
+                        text={selectedOrder.items[0].customDetails.fullPlateText}
+                        id={`modal-plate-${selectedOrder.id}`}
+                        label="প্লেট কপি"
+                      />
+                    )}
+                  </div>
+                  <div className="bg-neutral-900/80 p-2.5 rounded-lg border border-neutral-800 text-center">
+                    <p className="text-base sm:text-lg font-bold text-amber-400 font-mono">
+                      {selectedOrder.items[0]?.customDetails.fullPlateText || "N/A"}
+                    </p>
+                    <p className="text-neutral-400 mt-1 text-[11px]">
+                      প্যাকেজ: {selectedOrder.items[0]?.name}
+                    </p>
+                  </div>
                 </div>
 
+                {/* Financial Breakdown */}
                 <div className="bg-neutral-950 p-3 sm:p-4 rounded-xl border border-neutral-800 space-y-2">
                   <div className="flex justify-between">
                     <span className="text-neutral-400">মূল প্রোডাক্ট মূল্য:</span>
@@ -1055,20 +1215,27 @@ export default function AdminClient() {
                     <span>বিকাশ অগ্রিম প্রাপ্ত:</span>
                     <span className="font-mono">৳ {selectedOrder.advanceAmount}</span>
                   </div>
-                  <div className="flex justify-between text-amber-400 font-bold bg-amber-500/10 p-2 rounded-lg">
+                  <div className="flex justify-between text-amber-400 font-bold bg-amber-500/10 p-2 rounded-lg items-center">
                     <span>ডেলিভারির সময় প্রদেয় (COD বাকি):</span>
-                    <span className="font-mono">৳ {selectedOrder.remainingCodAmount}</span>
+                    <div className="flex items-center gap-1.5">
+                      <span className="font-mono text-base">৳ {selectedOrder.remainingCodAmount}</span>
+                      <CopyButton
+                        text={String(selectedOrder.remainingCodAmount)}
+                        id={`modal-cod-${selectedOrder.id}`}
+                      />
+                    </div>
                   </div>
                 </div>
 
                 {selectedOrder.bkashTrxId && (
-                  <div className="bg-pink-950/30 border border-pink-900/40 p-3 rounded-xl text-pink-300 font-mono text-[11px] sm:text-xs">
-                    bKash TrxID: {selectedOrder.bkashTrxId}
+                  <div className="bg-pink-950/30 border border-pink-900/40 p-2.5 sm:p-3 rounded-xl text-pink-300 font-mono text-[11px] sm:text-xs flex items-center justify-between">
+                    <span>bKash TrxID: {selectedOrder.bkashTrxId}</span>
+                    <CopyButton text={selectedOrder.bkashTrxId} id={`modal-trx-${selectedOrder.id}`} />
                   </div>
                 )}
               </div>
 
-              <div className="mt-5 sm:mt-6 flex justify-end gap-2">
+              <div className="pt-2 flex justify-end">
                 <button
                   onClick={() => setSelectedOrder(null)}
                   className="px-4 py-2 bg-neutral-800 hover:bg-neutral-700 text-neutral-300 rounded-xl text-xs font-semibold transition cursor-pointer"
