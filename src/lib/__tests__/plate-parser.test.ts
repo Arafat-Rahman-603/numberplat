@@ -1,5 +1,10 @@
 import { describe, it, expect } from "vitest";
-import { parseQuickPlateString, convertToBengaliDigits, getPlateDisplaySegments } from "../plate-parser";
+import {
+  parseQuickPlateString,
+  convertToBengaliDigits,
+  getPlateDisplaySegments,
+  parsePlateNumberInput,
+} from "../plate-parser";
 
 describe("Smart Plate Parser Unit Tests", () => {
   it("converts English digits to Bengali digits", () => {
@@ -69,6 +74,38 @@ describe("Smart Plate Parser Unit Tests", () => {
     expect(res.vehicleClass).toBe("থ");
     expect(res.series).toBe("১১");
     expect(res.number).toBe("১২৩৪");
+  });
+
+  it("parsePlateNumberInput parses unified number with hyphen, space, or continuous digits", () => {
+    expect(parsePlateNumberInput("13-1234")).toEqual({
+      seriesNumber: "১৩",
+      plateNumber: "১২৩৪",
+      formattedNumber: "১৩-১২৩৪",
+    });
+
+    expect(parsePlateNumberInput("13 1234")).toEqual({
+      seriesNumber: "১৩",
+      plateNumber: "১২৩৪",
+      formattedNumber: "১৩-১২৩৪",
+    });
+
+    expect(parsePlateNumberInput("131234")).toEqual({
+      seriesNumber: "১৩",
+      plateNumber: "১২৩৪",
+      formattedNumber: "১৩-১২৩৪",
+    });
+
+    expect(parsePlateNumberInput("1234")).toEqual({
+      seriesNumber: "",
+      plateNumber: "১২৩৪",
+      formattedNumber: "১২৩৪",
+    });
+
+    expect(parsePlateNumberInput("১৩-১২৩৪")).toEqual({
+      seriesNumber: "১৩",
+      plateNumber: "১২৩৪",
+      formattedNumber: "১৩-১২৩৪",
+    });
   });
 });
 

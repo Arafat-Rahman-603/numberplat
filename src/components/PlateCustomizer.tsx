@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ArrowDown, CheckCircle2, ChevronDown } from "lucide-react";
 import PlateGraphic from "./PlateGraphic";
 import { CustomPlateDetails } from "@/types";
 import {
   convertToBengaliDigits,
   convertToBengaliLetter,
+  parsePlateNumberInput,
   parseQuickPlateString,
 } from "@/lib/plate-parser";
 
@@ -95,9 +96,30 @@ export default function PlateCustomizer({
   const [quickInput, setQuickInput] = useState("");
   const [quickFeedback, setQuickFeedback] = useState("");
 
+  // Single unified number input state (e.g. "১৩-১২৩৪" or "১২৩৪")
+  const [numberInput, setNumberInput] = useState(() => {
+    const s = customDetails.seriesNumber?.trim();
+    const p = customDetails.plateNumber?.trim();
+    if (s && p) return `${s}-${p}`;
+    return p || s || "";
+  });
+
   const vehicleType = customDetails.vehicleType || "motorcycle";
   const hasBorder = customDetails.hasBorder !== false;
   const quantity = Math.max(1, customDetails.quantity || 1);
+
+  // Keep numberInput synced if parent updates customDetails (e.g. from gallery or sample click)
+  useEffect(() => {
+    const s = customDetails.seriesNumber?.trim();
+    const p = customDetails.plateNumber?.trim();
+    if (s && p) {
+      setNumberInput(`${s}-${p}`);
+    } else if (p) {
+      setNumberInput(p);
+    } else if (s) {
+      setNumberInput(s);
+    }
+  }, [customDetails.seriesNumber, customDetails.plateNumber]);
 
   // Helper to sync changes and recompute fullPlateText
   const updateCustomDetails = (updates: Partial<CustomPlateDetails>) => {
@@ -117,7 +139,7 @@ export default function PlateCustomizer({
     onChange(updated);
   };
 
-  // When user types in the Quick Input box
+  // When user types in the Quick Input box ("পুরো নম্বর একবারে লিখুন চাইলে")
   const handleQuickInputChange = (val: string) => {
     setQuickInput(val);
     if (!val.trim()) return;
@@ -126,10 +148,19 @@ export default function PlateCustomizer({
     const updates: Partial<CustomPlateDetails> = {};
     if (parsed.metroCity) updates.metroCity = parsed.metroCity;
     if (parsed.vehicleClass) updates.vehicleClass = parsed.vehicleClass;
-    if (parsed.seriesNumber) updates.seriesNumber = parsed.seriesNumber;
-    if (parsed.plateNumber) updates.plateNumber = parsed.plateNumber;
+    if (parsed.seriesNumber !== undefined) updates.seriesNumber = parsed.seriesNumber;
+    if (parsed.plateNumber !== undefined) updates.plateNumber = parsed.plateNumber;
 
     if (Object.keys(updates).length > 0) {
+      // Sync unified number input
+      if (parsed.seriesNumber && parsed.plateNumber) {
+        setNumberInput(`${parsed.seriesNumber}-${parsed.plateNumber}`);
+      } else if (parsed.plateNumber) {
+        setNumberInput(parsed.plateNumber);
+      } else if (parsed.seriesNumber) {
+        setNumberInput(parsed.seriesNumber);
+      }
+
       updateCustomDetails(updates);
     }
   };
@@ -139,16 +170,32 @@ export default function PlateCustomizer({
     if (!quickInput.trim()) return;
     const parsed = parseQuickPlateString(quickInput);
 
+    const s = parsed.seriesNumber || customDetails.seriesNumber || "১২";
+    const p = parsed.plateNumber || customDetails.plateNumber || "৩৪৫৬";
+
     const updates: Partial<CustomPlateDetails> = {
       metroCity: parsed.metroCity || customDetails.metroCity || "ঢাকা মেট্রো",
       vehicleClass: parsed.vehicleClass || customDetails.vehicleClass || "ল",
-      seriesNumber: parsed.seriesNumber || customDetails.seriesNumber || "১২",
-      plateNumber: parsed.plateNumber || customDetails.plateNumber || "৩৪৫৬",
+      seriesNumber: s,
+      plateNumber: p,
     };
 
+    setNumberInput(`${s}-${p}`);
     updateCustomDetails(updates);
     setQuickFeedback("নম্বর সফলভাবে প্লেটে বসানো হয়েছে!");
     setTimeout(() => setQuickFeedback(""), 3000);
+  };
+
+  // Unified Number Input Handler: accepts full number together ("একসাথে দিলে হবে")
+  const handleCombinedNumberChange = (rawVal: string) => {
+    const converted = convertToBengaliDigits(rawVal);
+    setNumberInput(converted);
+
+    const parsed = parsePlateNumberInput(converted);
+    updateCustomDetails({
+      seriesNumber: parsed.seriesNumber,
+      plateNumber: parsed.plateNumber,
+    });
   };
 
   // Manual Field Handlers
@@ -159,16 +206,6 @@ export default function PlateCustomizer({
   const handleVehicleClassChange = (val: string) => {
     const converted = convertToBengaliLetter(val);
     updateCustomDetails({ vehicleClass: converted });
-  };
-
-  const handleSeriesNumberChange = (val: string) => {
-    const converted = convertToBengaliDigits(val);
-    updateCustomDetails({ seriesNumber: converted });
-  };
-
-  const handlePlateNumberChange = (val: string) => {
-    const converted = convertToBengaliDigits(val);
-    updateCustomDetails({ plateNumber: converted });
   };
 
   const handleVehicleTypeChange = (type: "motorcycle" | "scooter") => {
@@ -358,9 +395,9 @@ export default function PlateCustomizer({
               </div>
             </div>
 
-            {/* Form Row: সিরিজ * and প্রথম অংশ * */}
-            <div className="grid grid-cols-2 gap-3">
-              <div>
+            {/* Form Row: সিরিজ * and নম্বর * (একসাথে পুরো নম্বর লেখার সহজ ফিল্ড) */}
+            <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
+              <div className="sm:col-span-4">
                 <label className="text-xs font-bold text-neutral-800 block mb-1.5">
                   সিরিজ <span className="text-red-500">*</span>
                 </label>
@@ -368,37 +405,28 @@ export default function PlateCustomizer({
                   type="text"
                   value={customDetails.vehicleClass || ""}
                   onChange={(e) => handleVehicleClassChange(e.target.value)}
-                  placeholder="ল"
+                  placeholder="ম বা ল"
                   className="w-full px-3.5 py-2.5 bg-white border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:border-amber-500 font-sans"
                 />
               </div>
 
-              <div>
-                <label className="text-xs font-bold text-neutral-800 block mb-1.5">
-                  প্রথম অংশ <span className="text-red-500">*</span>
-                </label>
+              <div className="sm:col-span-8">
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="text-xs font-bold text-neutral-800 block">
+                    নম্বর <span className="text-red-500">*</span>
+                  </label>
+                  <span className="text-[10px] text-neutral-400">
+                    একসাথে লিখুন (যেমন: ১৩-১২৩৪)
+                  </span>
+                </div>
                 <input
                   type="text"
-                  value={customDetails.seriesNumber || ""}
-                  onChange={(e) => handleSeriesNumberChange(e.target.value)}
-                  placeholder="৮২"
+                  value={numberInput}
+                  onChange={(e) => handleCombinedNumberChange(e.target.value)}
+                  placeholder="১৩-১২৩৪ বা ৩৪৫৬"
                   className="w-full px-3.5 py-2.5 bg-white border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:border-amber-500 font-mono"
                 />
               </div>
-            </div>
-
-            {/* Form Field: শেষ অংশ * */}
-            <div>
-              <label className="text-xs font-bold text-neutral-800 block mb-1.5">
-                শেষ অংশ <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                value={customDetails.plateNumber || ""}
-                onChange={(e) => handlePlateNumberChange(e.target.value)}
-                placeholder="৩৪৫৬"
-                className="w-full px-3.5 py-2.5 bg-white border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:border-amber-500 font-mono"
-              />
             </div>
 
             {/* Dashed Separator */}

@@ -16,6 +16,49 @@ export function convertToBengaliDigits(input: string): string {
   return input.replace(/[0-9]/g, (d) => DIGIT_MAP[d] || d);
 }
 
+export function parsePlateNumberInput(val: string): {
+  seriesNumber: string;
+  plateNumber: string;
+  formattedNumber: string;
+} {
+  const converted = convertToBengaliDigits(val.trim());
+  if (!converted) {
+    return { seriesNumber: "", plateNumber: "", formattedNumber: "" };
+  }
+
+  // If input contains hyphen or space: e.g. "১৩-১২৩৪" or "১৩ ১২৩৪"
+  const parts = converted.split(/[-\s]+/).filter(Boolean);
+  if (parts.length >= 2) {
+    const s = parts[0];
+    const n = parts.slice(1).join("");
+    return {
+      seriesNumber: s,
+      plateNumber: n,
+      formattedNumber: `${s}-${n}`,
+    };
+  }
+
+  // Single string of digits
+  const digitsOnly = converted.replace(/[^০-৯0-9]/g, "");
+  if (digitsOnly.length >= 5) {
+    // 5 or 6 digits total: first 2 digits are series number, remaining are plate number
+    const s = digitsOnly.slice(0, 2);
+    const n = digitsOnly.slice(2);
+    return {
+      seriesNumber: s,
+      plateNumber: n,
+      formattedNumber: `${s}-${n}`,
+    };
+  }
+
+  // 1-4 digits: e.g. "১২৩৪" (4-digit plate) or partial input
+  return {
+    seriesNumber: "",
+    plateNumber: digitsOnly,
+    formattedNumber: digitsOnly,
+  };
+}
+
 const CITY_LOOKUP: Record<string, string> = {
   dhaka: "ঢাকা মেট্রো",
   "dhaka metro": "ঢাকা মেট্রো",

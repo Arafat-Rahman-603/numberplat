@@ -41,7 +41,7 @@ export default function PlateGraphic({
 
   // If rawInput or fullPlateText is provided and field values are empty, parse it
   const incoming = (rawInput?.trim() || fullPlateText?.trim() || "");
-  if (incoming && (!city || !vClass || !series || !pNum)) {
+  if (incoming && (!city || !vClass || (!series && !pNum))) {
     const parsed = parseQuickPlateString(incoming);
     if (!city && parsed.metroCity) city = parsed.metroCity;
     if (!vClass && parsed.vehicleClass) vClass = parsed.vehicleClass;
@@ -52,8 +52,19 @@ export default function PlateGraphic({
   // Fallbacks for display preview if still empty (as stated in reference: "নম্বর পূরণ না হওয়া পর্যন্ত নমুনা দেখাচ্ছে")
   const displayCity = city || "ঢাকা মেট্রো";
   const displayClass = vClass || "ল";
-  const displaySeries = convertToBengaliDigits(series || "১২");
-  const displayNumber = convertToBengaliDigits(pNum || "৩৪৫৬");
+
+  // Compute number part without forcing fake "১২" if user entered their own number
+  const isNumberEmpty = !series && !pNum;
+  let numPart = "";
+  if (isNumberEmpty) {
+    numPart = "১২-৩৪৫৬";
+  } else if (series && pNum) {
+    numPart = `${convertToBengaliDigits(series)}-${convertToBengaliDigits(pNum)}`;
+  } else if (pNum) {
+    numPart = convertToBengaliDigits(pNum);
+  } else if (series) {
+    numPart = convertToBengaliDigits(series);
+  }
 
   // Official BRTA Circular Dimensions:
   // Motorcycle: 285 × 50 mm (Aspect ratio: 285 / 50 = 5.7 : 1)
@@ -82,7 +93,7 @@ export default function PlateGraphic({
         lg: "text-xs min-[360px]:text-sm sm:text-lg md:text-xl lg:text-2xl font-extrabold tracking-tight",
       }[size];
 
-  const singleLineText = `${displayCity}-${displayClass}-${displaySeries}-${displayNumber}`;
+  const singleLineText = `${displayCity}-${displayClass}-${numPart}`;
 
   return (
     <div className="w-full flex items-center justify-center select-none py-1">
@@ -123,7 +134,7 @@ export default function PlateGraphic({
                   isBlackAcrylic ? "text-white" : "text-neutral-950"
                 } whitespace-nowrap mt-0.5 sm:mt-1`}
               >
-                {displaySeries}-{displayNumber}
+                {numPart}
               </span>
             </div>
           ) : (
