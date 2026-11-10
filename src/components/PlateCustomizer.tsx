@@ -118,6 +118,8 @@ export default function PlateCustomizer({
       setNumberInput(p);
     } else if (s) {
       setNumberInput(s);
+    } else {
+      setNumberInput("");
     }
   }, [customDetails.seriesNumber, customDetails.plateNumber]);
 
@@ -142,27 +144,31 @@ export default function PlateCustomizer({
   // When user types in the Quick Input box ("পুরো নম্বর একবারে লিখুন চাইলে")
   const handleQuickInputChange = (val: string) => {
     setQuickInput(val);
-    if (!val.trim()) return;
+    if (!val.trim()) {
+      setNumberInput("");
+      updateCustomDetails({
+        metroCity: "",
+        vehicleClass: "",
+        seriesNumber: "",
+        plateNumber: "",
+      });
+      return;
+    }
 
     const parsed = parseQuickPlateString(val);
-    const updates: Partial<CustomPlateDetails> = {};
-    if (parsed.metroCity) updates.metroCity = parsed.metroCity;
-    if (parsed.vehicleClass) updates.vehicleClass = parsed.vehicleClass;
-    if (parsed.seriesNumber !== undefined) updates.seriesNumber = parsed.seriesNumber;
-    if (parsed.plateNumber !== undefined) updates.plateNumber = parsed.plateNumber;
+    const s = parsed.seriesNumber || "";
+    const p = parsed.plateNumber || "";
+    const num = s && p ? `${s}-${p}` : p || s || "";
 
-    if (Object.keys(updates).length > 0) {
-      // Sync unified number input
-      if (parsed.seriesNumber && parsed.plateNumber) {
-        setNumberInput(`${parsed.seriesNumber}-${parsed.plateNumber}`);
-      } else if (parsed.plateNumber) {
-        setNumberInput(parsed.plateNumber);
-      } else if (parsed.seriesNumber) {
-        setNumberInput(parsed.seriesNumber);
-      }
+    setNumberInput(num);
 
-      updateCustomDetails(updates);
-    }
+    // Completely replace with what was parsed from quick input (no ghost values from previous input!)
+    updateCustomDetails({
+      metroCity: parsed.metroCity || "",
+      vehicleClass: parsed.vehicleClass || "",
+      seriesNumber: s,
+      plateNumber: p,
+    });
   };
 
   // When clicking "বসিয়ে দিন" button
@@ -170,18 +176,19 @@ export default function PlateCustomizer({
     if (!quickInput.trim()) return;
     const parsed = parseQuickPlateString(quickInput);
 
-    const s = parsed.seriesNumber || customDetails.seriesNumber || "১২";
-    const p = parsed.plateNumber || customDetails.plateNumber || "৩৪৫৬";
+    const s = parsed.seriesNumber || "";
+    const p = parsed.plateNumber || "";
+    const num = s && p ? `${s}-${p}` : p || s || "";
 
-    const updates: Partial<CustomPlateDetails> = {
-      metroCity: parsed.metroCity || customDetails.metroCity || "ঢাকা মেট্রো",
-      vehicleClass: parsed.vehicleClass || customDetails.vehicleClass || "ল",
+    setNumberInput(num);
+
+    updateCustomDetails({
+      metroCity: parsed.metroCity || "ঢাকা মেট্রো",
+      vehicleClass: parsed.vehicleClass || "",
       seriesNumber: s,
       plateNumber: p,
-    };
+    });
 
-    setNumberInput(`${s}-${p}`);
-    updateCustomDetails(updates);
     setQuickFeedback("নম্বর সফলভাবে প্লেটে বসানো হয়েছে!");
     setTimeout(() => setQuickFeedback(""), 3000);
   };

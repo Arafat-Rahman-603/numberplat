@@ -107,5 +107,13 @@ describe("Smart Plate Parser Unit Tests", () => {
       formattedNumber: "১৩-১২৩৪",
     });
   });
+
+  it("parses partial input 'dhaka metro 43' without inventing vehicle class or series", () => {
+    const result = parseQuickPlateString("dhaka metro 43");
+    expect(result.metroCity).toBe("ঢাকা মেট্রো");
+    expect(result.vehicleClass).toBeUndefined();
+    expect(result.seriesNumber).toBeUndefined();
+    expect(result.plateNumber).toBe("৪৩");
+  });
 });
 

@@ -245,21 +245,41 @@ export function parseQuickPlateString(raw: string): {
   }
 
   // 3. Extract letter class
-  // Strip out the detected city name from the string to prevent matching letters inside city name (e.g. 'ঢ' in 'ঢাকা')
+  // Strip out the detected city name from the string to prevent matching letters inside city name
   let stringWithoutCity = clean;
   if (result.metroCity) {
     stringWithoutCity = stringWithoutCity.replace(result.metroCity, "");
-    stringWithoutCity = stringWithoutCity.replace(/ঢাকা|চট্টগ্রাম|সিলেট|রাজশাহী|খুলনা|বরিশাল|রংপুর|ময়মনসিংহ|গাজীপুর|নারায়ণগঞ্জ|মেট্রো/g, "");
   }
+  stringWithoutCity = stringWithoutCity.replace(
+    /ঢাকা|চট্টগ্রাম|সিলেট|রাজশাহী|খুলনা|বরিশাল|রংপুর|ময়মনসিংহ|গাজীপুর|নারায়ণগঞ্জ|মেট্রো|dhaka|metro|dhk|ctg|chattogram|chittagong|sylhet|rajshahi|khulna|barishal|barisal|rangpur|mymensingh|gazipur|narayanganj/gi,
+    ""
+  );
 
   // Check for Bengali letter inside remaining string
   const bLetterMatch = stringWithoutCity.match(/([কখগঘঙচছজঝটঠডঢণতথদধনপফবভমযরলশষসহড়ঢ়য়])/);
   if (bLetterMatch) {
     result.vehicleClass = bLetterMatch[1];
   } else {
-    // Check parts for English letter
+    // Check non-city parts for English letter
+    const cityTokens = new Set([
+      "dhaka",
+      "metro",
+      "dhk",
+      "ctg",
+      "chattogram",
+      "chittagong",
+      "sylhet",
+      "rajshahi",
+      "khulna",
+      "barishal",
+      "barisal",
+      "rangpur",
+      "mymensingh",
+      "gazipur",
+      "narayanganj",
+    ]);
     for (const part of parts) {
-      if (LETTER_LOOKUP[part]) {
+      if (!cityTokens.has(part) && LETTER_LOOKUP[part]) {
         result.vehicleClass = LETTER_LOOKUP[part];
         break;
       }

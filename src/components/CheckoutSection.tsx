@@ -596,10 +596,10 @@ export default function CheckoutSection({
           </div>
 
           {/* Right Column: Dynamic Price Breakdown Card & Order Submit */}
-          <div className="lg:col-span-5 lg:sticky lg:top-28 self-start z-10">
-            <div className="bg-neutral-900 text-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-7 border border-neutral-800 shadow-2xl space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b border-neutral-800">
-                <h3 className="font-bold text-base flex items-center gap-2">
+          <div className="lg:col-span-5 xl:col-span-5 lg:sticky lg:top-20 xl:top-24 self-start z-10 max-h-[calc(100vh-5.5rem)] overflow-y-auto">
+            <div className="bg-neutral-900 text-white rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 border border-neutral-800 shadow-2xl space-y-2.5 sm:space-y-3">
+              <div className="flex items-center justify-between pb-2 border-b border-neutral-800">
+                <h3 className="font-bold text-sm sm:text-base flex items-center gap-2">
                   <span className="w-2.5 h-2.5 rounded-full bg-amber-400" />
                   অর্ডারের টাকার হিসাব (Order Summary)
                 </h3>
@@ -609,14 +609,14 @@ export default function CheckoutSection({
               </div>
 
               {/* Breakdown Items */}
-              <div className="space-y-3 text-xs sm:text-sm">
+              <div className="space-y-1.5 sm:space-y-2 text-xs">
                 <div className="flex justify-between text-neutral-300">
                   <span>প্রোডাক্ট নিয়মিত মূল্য</span>
                   <span className="font-mono text-white">৳ {pricing.originalSubtotal}</span>
                 </div>
 
                 {pricing.discountAmount > 0 && (
-                  <div className="flex justify-between text-emerald-400 font-semibold bg-emerald-950/30 p-2 rounded-lg border border-emerald-800/40">
+                  <div className="flex justify-between text-emerald-400 font-semibold bg-emerald-950/30 px-2.5 py-1.5 rounded-lg border border-emerald-800/40">
                     <span>৩০% নিশ্চিত স্পেশাল ছাড়</span>
                     <span className="font-mono">- ৳ {pricing.discountAmount}</span>
                   </div>
@@ -629,29 +629,29 @@ export default function CheckoutSection({
                   <span className="font-mono text-white">৳ {pricing.shippingCharge}</span>
                 </div>
 
-                <div className="pt-3 border-t border-neutral-800 flex justify-between font-bold text-base text-white">
+                <div className="pt-2 border-t border-neutral-800 flex justify-between font-bold text-sm sm:text-base text-white">
                   <span>সর্বমোট বিল (Total Payable)</span>
                   <span className="font-mono text-amber-400">৳ {pricing.totalPayable}</span>
                 </div>
 
                 {/* Advance Amount Row */}
                 {pricing.advanceAmount > 0 && (
-                  <div className="flex justify-between text-pink-400 font-semibold bg-pink-950/40 p-2.5 rounded-xl border border-pink-900/40">
+                  <div className="flex justify-between text-pink-400 font-semibold bg-pink-950/40 px-2.5 py-1.5 rounded-xl border border-pink-900/40 text-xs">
                     <span className="flex items-center gap-1.5">
-                      <CreditCard className="w-4 h-4 text-[#E2136E]" />
+                      <CreditCard className="w-3.5 h-3.5 text-[#E2136E]" />
                       বিকাশে অগ্রিম প্রদেয়
                     </span>
-                    <span className="font-mono">৳ {pricing.advanceAmount}</span>
+                    <span className="font-mono font-bold">৳ {pricing.advanceAmount}</span>
                   </div>
                 )}
 
                 {/* Remaining COD Balance */}
-                <div className="flex justify-between text-amber-300 font-extrabold bg-amber-500/10 p-3.5 rounded-2xl border border-amber-500/30 text-base">
-                  <span className="flex items-center gap-2">
-                    <Truck className="w-5 h-5 text-amber-400" />
+                <div className="flex justify-between items-center text-amber-300 font-extrabold bg-amber-500/10 px-3 py-2 rounded-xl border border-amber-500/30 text-xs sm:text-sm">
+                  <span className="flex items-center gap-1.5">
+                    <Truck className="w-4 h-4 text-amber-400 shrink-0" />
                     ডেলিভারির সময় প্রদেয় (COD)
                   </span>
-                  <span className="font-mono text-2xl text-amber-400">
+                  <span className="font-mono text-xl sm:text-2xl text-amber-400">
                     ৳ {pricing.remainingCodAmount}
                   </span>
                 </div>
@@ -659,7 +659,7 @@ export default function CheckoutSection({
 
               {/* Error Alert */}
               {errorMsg && (
-                <div className="p-3 bg-rose-500/15 border border-rose-500/30 rounded-xl text-rose-300 text-xs flex items-center gap-2">
+                <div className="p-2.5 bg-rose-500/15 border border-rose-500/30 rounded-xl text-rose-300 text-xs flex items-center gap-2">
                   <AlertCircle className="w-4 h-4 shrink-0" />
                   <span>{errorMsg}</span>
                 </div>
@@ -669,24 +669,24 @@ export default function CheckoutSection({
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-amber-400 hover:bg-amber-300 text-neutral-950 font-black py-4 px-6 rounded-2xl transition shadow-[0_8px_20px_rgba(245,158,11,0.3)] hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50 text-base sm:text-lg flex items-center justify-center gap-2"
+                className="w-full bg-amber-400 hover:bg-amber-300 text-neutral-950 font-black py-3 sm:py-3.5 px-4 rounded-xl transition shadow-[0_8px_20px_rgba(245,158,11,0.3)] hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50 text-sm sm:text-base flex items-center justify-center gap-2 cursor-pointer"
               >
                 {isSubmitting ? (
                   <span>অর্ডার প্রসেস হচ্ছে...</span>
                 ) : paymentMethod === "bkash_advance" ? (
                   <>
                     <span>বিকাশে ৳{pricing.advanceAmount} দিয়ে ৩০% ছাড় নিন</span>
-                    <ChevronRight className="w-5 h-5" />
+                    <ChevronRight className="w-4 h-4" />
                   </>
                 ) : paymentMethod === "bkash_full" ? (
                   <>
                     <span>বিকাশে ৳{pricing.totalPayable} পে করে অর্ডার করুন</span>
-                    <ChevronRight className="w-5 h-5" />
+                    <ChevronRight className="w-4 h-4" />
                   </>
                 ) : (
                   <>
                     <span>ক্যাশ অন ডেলিভারিতে অর্ডার নিশ্চিত করুন</span>
-                    <ChevronRight className="w-5 h-5" />
+                    <ChevronRight className="w-4 h-4" />
                   </>
                 )}
               </button>
@@ -695,8 +695,8 @@ export default function CheckoutSection({
               <a
                 href={`https://wa.me/8801700000000?text=${encodeURIComponent(
                   `আসসালামু আলাইকুম! আমি বাইকের বাংলা প্লেট অর্ডার করতে চাই:\n\n` +
-                  `• প্লেটের লেখা: ${customDetails.fullPlateText}\n` +
-                  `• প্যাকেজ: ${customDetails.plateType === "both" ? "সামনে+পেছনে কম্বো" : customDetails.plateType === "back" ? "পেছনের প্লেট" : "সামনের প্লেট"}\n` +
+                  `• প্লেটের লেখা: ${customDetails.fullPlateText || "ঢাকা মেট্রো"}\n` +
+                  `• প্যাকেজ: শুধু সামনের প্লেট (Front Plate)\n` +
                   `• নাম: ${customerName || "নাম উল্লেখ করা হয়নি"}\n` +
                   `• ফোন: ${customerPhone || "ফোন উল্লেখ করা হয়নি"}\n` +
                   `• ঠিকানা: ${deliveryAddress || "ঠিকানা উল্লেখ করা হয়নি"}, ${district}\n` +
@@ -704,14 +704,14 @@ export default function CheckoutSection({
                 )}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full bg-emerald-700/80 hover:bg-emerald-600 text-white font-bold py-3 px-4 rounded-xl text-xs sm:text-sm transition flex items-center justify-center gap-2 border border-emerald-600/50"
+                className="w-full bg-emerald-700/80 hover:bg-emerald-600 text-white font-bold py-2.5 px-3 rounded-xl text-xs sm:text-sm transition flex items-center justify-center gap-1.5 border border-emerald-600/50"
               >
                 <span>হোয়াটসঅ্যাপে সরাসরি অর্ডার পাঠান</span>
               </a>
 
-              <div className="pt-2 text-center text-[11px] text-neutral-400 space-y-1">
-                <p className="flex items-center justify-center gap-1.5 text-neutral-300">
-                  <Lock className="w-3.5 h-3.5 text-emerald-400" />
+              <div className="pt-1 text-center text-[10px] sm:text-[11px] text-neutral-400 space-y-0.5">
+                <p className="flex items-center justify-center gap-1 text-neutral-300">
+                  <Lock className="w-3 h-3 text-emerald-400" />
                   <span>অফিসিয়াল bKash Merchant API দ্বারা সুরক্ষিত</span>
                 </p>
                 <p>পণ্য চেক করে বাকি টাকা ডেলিভারি ম্যানের হাতে দেবেন</p>
