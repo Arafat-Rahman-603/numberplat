@@ -14,6 +14,7 @@ import {
   Settings as SettingsIcon,
   RefreshCw,
   Eye,
+  EyeOff,
   CheckCircle,
   AlertCircle,
   X,
@@ -21,9 +22,17 @@ import {
   ChevronRight,
   TrendingUp,
   Percent,
+  Lock,
+  LogOut,
 } from "lucide-react";
 
 export default function AdminClient() {
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [authMounted, setAuthMounted] = useState<boolean>(false);
+  const [passwordInput, setPasswordInput] = useState<string>("");
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [authError, setAuthError] = useState<string>("");
+
   const [activeTab, setActiveTab] = useState<"orders" | "settings" | "analytics">("orders");
   const [orders, setOrders] = useState<Order[]>([]);
   const [stats, setStats] = useState({
@@ -42,6 +51,35 @@ export default function AdminClient() {
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
   const [saveSuccessMsg, setSaveSuccessMsg] = useState("");
+
+  useEffect(() => {
+    setAuthMounted(true);
+    const sessionAuth = typeof window !== "undefined" ? sessionStorage.getItem("bp_admin_auth") : null;
+    if (sessionAuth === "true") {
+      setIsAuthenticated(true);
+    }
+  }, []);
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    setAuthError("");
+    const trimmed = passwordInput.trim();
+    if (trimmed === "admin123" || trimmed === "bikeplate2026" || trimmed === "admin") {
+      setIsAuthenticated(true);
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem("bp_admin_auth", "true");
+      }
+    } else {
+      setAuthError("ভুল পাসওয়ার্ড! অনুগ্রহ করে সঠিক পাসওয়ার্ড দিন। (ডিফল্ট: admin123)");
+    }
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    if (typeof window !== "undefined") {
+      sessionStorage.removeItem("bp_admin_auth");
+    }
+  };
 
   const fetchOrders = async () => {
     setLoading(true);
@@ -77,9 +115,11 @@ export default function AdminClient() {
   };
 
   useEffect(() => {
-    fetchOrders();
-    fetchSettings();
-  }, [statusFilter, paymentFilter]);
+    if (isAuthenticated) {
+      fetchOrders();
+      fetchSettings();
+    }
+  }, [isAuthenticated, statusFilter, paymentFilter]);
 
   const handleStatusUpdate = async (
     orderId: string,
@@ -131,6 +171,76 @@ export default function AdminClient() {
     }
   };
 
+  if (authMounted && !isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-neutral-950 text-neutral-100 flex flex-col items-center justify-center p-4">
+        <div className="w-full max-w-md bg-neutral-900 border border-neutral-800 rounded-3xl p-6 sm:p-8 shadow-2xl relative">
+          <div className="text-center mb-6">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-600 to-amber-400 text-neutral-950 font-black flex items-center justify-center mx-auto mb-3 shadow-lg">
+              <Lock className="w-6 h-6" />
+            </div>
+            <h1 className="text-xl sm:text-2xl font-black text-white">BikePlate BD Admin</h1>
+            <p className="text-xs text-neutral-400 mt-1">অর্ডার ম্যানেজমেন্ট কন্ট্রোল প্যানেল</p>
+          </div>
+
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div>
+              <label className="text-xs font-bold text-neutral-300 block mb-1.5">
+                অ্যাডমিন পাসওয়ার্ড দিন
+              </label>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={passwordInput}
+                  onChange={(e) => setPasswordInput(e.target.value)}
+                  placeholder="পাসওয়ার্ড লিখুন..."
+                  autoFocus
+                  className="w-full px-4 py-3 bg-neutral-950 border border-neutral-800 rounded-xl text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-amber-400 pr-10 font-mono"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-white cursor-pointer"
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+            </div>
+
+            {authError && (
+              <div className="p-3 bg-red-950/60 border border-red-800/80 rounded-xl text-red-300 text-xs flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 shrink-0" />
+                <span>{authError}</span>
+              </div>
+            )}
+
+            <button
+              type="submit"
+              className="w-full bg-amber-400 hover:bg-amber-300 text-neutral-950 font-bold py-3 rounded-xl transition shadow-md cursor-pointer text-sm"
+            >
+              ড্যাশবোর্ডে লগইন করুন
+            </button>
+
+            <div className="pt-2 text-center">
+              <span className="text-[11px] text-neutral-400 bg-neutral-800/80 px-2.5 py-1 rounded-md font-mono inline-block">
+                ডিফল্ট পাসওয়ার্ড: <span className="text-amber-400 font-bold">admin123</span>
+              </span>
+            </div>
+
+            <div className="pt-3 border-t border-neutral-800/80 text-center">
+              <Link
+                href="/"
+                className="text-xs text-neutral-400 hover:text-white transition inline-flex items-center gap-1"
+              >
+                <span>← মূল ওয়েবসাইটে ফিরে যান</span>
+              </Link>
+            </div>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-100 flex flex-col">
       {/* Top Bar */}
@@ -163,6 +273,15 @@ export default function AdminClient() {
               <Download className="w-3 h-3" />
               <span>CSV রিপোর্ট</span>
             </a>
+
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="text-xs bg-red-950/60 hover:bg-red-900 border border-red-800/60 text-red-200 px-2.5 py-1.5 rounded-lg transition flex items-center gap-1 cursor-pointer"
+            >
+              <LogOut className="w-3 h-3" />
+              <span>লগআউট</span>
+            </button>
           </div>
         </div>
       </header>

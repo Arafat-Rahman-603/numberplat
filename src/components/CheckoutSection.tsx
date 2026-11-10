@@ -265,7 +265,7 @@ export default function CheckoutSection({
           </p>
         </div>
 
-        <form onSubmit={handleSubmitOrder} className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <form onSubmit={handleSubmitOrder} className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start relative">
           {/* Left Column: Customer details, Package & Payment Methods */}
           <div className="lg:col-span-7 space-y-6">
             {/* Step 1: Package Selection */}
@@ -274,98 +274,31 @@ export default function CheckoutSection({
                 <span className="w-6 h-6 rounded-full bg-neutral-900 text-white text-xs flex items-center justify-center font-mono">
                   ১
                 </span>
-                প্যাকেজ নির্বাচন করুন
+                প্যাকেজ
               </h3>
 
               <div className="space-y-2.5">
-                {/* Option 1: Front */}
-                <label
-                  onClick={() => handlePackageChange("front")}
-                  className={`flex items-center justify-between p-3.5 rounded-2xl border cursor-pointer transition ${
-                    customDetails.plateType === "front"
-                      ? "border-amber-500 bg-amber-50/60 ring-1 ring-amber-500/20"
-                      : "border-neutral-200 hover:bg-neutral-50"
-                  }`}
-                >
+                {/* Single Option: Front Plate */}
+                <div className="flex items-center justify-between p-3.5 rounded-2xl border border-amber-500 bg-amber-50/60 ring-1 ring-amber-500/20">
                   <div className="flex items-center gap-3">
-                    <input
-                      type="radio"
-                      name="package"
-                      checked={customDetails.plateType === "front"}
-                      onChange={() => handlePackageChange("front")}
-                      className="w-4 h-4 accent-amber-500"
-                    />
+                    <div className="w-4 h-4 rounded-full border border-amber-600 bg-amber-500 flex items-center justify-center">
+                      <div className="w-1.5 h-1.5 rounded-full bg-white" />
+                    </div>
                     <div>
                       <span className="font-bold text-sm text-neutral-900 block">
                         শুধু সামনের প্লেট (Front Plate)
                       </span>
-                      <span className="text-xs text-neutral-500">বাইকের ফ্রন্ট মাডগার্ডের জন্য স্ট্যান্ডার্ড সাইজ</span>
-                    </div>
-                  </div>
-                  <span className="font-mono font-bold text-neutral-900">৳{frontPlatePrice}</span>
-                </label>
-
-                {/* Option 2: Back */}
-                <label
-                  onClick={() => handlePackageChange("back")}
-                  className={`flex items-center justify-between p-3.5 rounded-2xl border cursor-pointer transition ${
-                    customDetails.plateType === "back"
-                      ? "border-amber-500 bg-amber-50/60 ring-1 ring-amber-500/20"
-                      : "border-neutral-200 hover:bg-neutral-50"
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <input
-                      type="radio"
-                      name="package"
-                      checked={customDetails.plateType === "back"}
-                      onChange={() => handlePackageChange("back")}
-                      className="w-4 h-4 accent-amber-500"
-                    />
-                    <div>
-                      <span className="font-bold text-sm text-neutral-900 block">
-                        শুধু পেছনের প্লেট (Back Plate)
+                      <span className="text-xs text-neutral-500">
+                        {customDetails.vehicleType === "scooter"
+                          ? "স্কুটার ২০০ × ১০০ মি.মি. সাইজ (+৳৫০)"
+                          : "বাইকের ফ্রন্ট মাডগার্ডের জন্য স্ট্যান্ডার্ড সাইজ"}
                       </span>
-                      <span className="text-xs text-neutral-500">পেছনের ব্যাকগার্ডের জন্য প্রস্তুতকৃত সাইজ</span>
                     </div>
                   </div>
-                  <span className="font-mono font-bold text-neutral-900">৳{backPlatePrice}</span>
-                </label>
-
-                {/* Option 3: Combo */}
-                <label
-                  onClick={() => handlePackageChange("both")}
-                  className={`flex items-center justify-between p-3.5 rounded-2xl border cursor-pointer transition relative ${
-                    customDetails.plateType === "both"
-                      ? "border-amber-500 bg-amber-50/60 ring-2 ring-amber-500"
-                      : "border-neutral-200 hover:bg-neutral-50"
-                  }`}
-                >
-                  <span className="absolute -top-2.5 right-4 bg-emerald-600 text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase">
-                    বেস্ট ভ্যালু কম্বো
+                  <span className="font-mono font-bold text-neutral-900">
+                    ৳{frontPlatePrice + (customDetails.vehicleType === "scooter" ? 50 : 0)}
                   </span>
-                  <div className="flex items-center gap-3">
-                    <input
-                      type="radio"
-                      name="package"
-                      checked={customDetails.plateType === "both"}
-                      onChange={() => handlePackageChange("both")}
-                      className="w-4 h-4 accent-amber-500"
-                    />
-                    <div>
-                      <span className="font-bold text-sm text-neutral-900 block">
-                        সামনে + পেছনের প্লেট কম্বো সেট
-                      </span>
-                      <span className="text-xs text-emerald-700 font-semibold">
-                        উভয় প্লেট একসাথে নিলে অতিরিক্ত সেভিংস!
-                      </span>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <span className="font-mono font-bold text-base text-neutral-900">৳{comboPlatePrice}</span>
-                    <span className="block text-[10px] text-neutral-400 line-through font-mono">৳৭৫০</span>
-                  </div>
-                </label>
+                </div>
               </div>
 
               {/* Selected plate text confirmation */}
@@ -663,8 +596,8 @@ export default function CheckoutSection({
           </div>
 
           {/* Right Column: Dynamic Price Breakdown Card & Order Submit */}
-          <div className="lg:col-span-5 sticky top-24">
-            <div className="bg-neutral-900 text-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-7 border border-neutral-800 shadow-2xl space-y-5">
+          <div className="lg:col-span-5 lg:sticky lg:top-28 self-start z-10">
+            <div className="bg-neutral-900 text-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-7 border border-neutral-800 shadow-2xl space-y-4">
               <div className="flex items-center justify-between pb-3 border-b border-neutral-800">
                 <h3 className="font-bold text-base flex items-center gap-2">
                   <span className="w-2.5 h-2.5 rounded-full bg-amber-400" />
