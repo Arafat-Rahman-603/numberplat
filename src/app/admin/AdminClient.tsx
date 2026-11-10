@@ -24,6 +24,7 @@ import {
   Percent,
   Lock,
   LogOut,
+  Phone,
 } from "lucide-react";
 
 export default function AdminClient() {
@@ -173,17 +174,17 @@ export default function AdminClient() {
 
   if (authMounted && !isAuthenticated) {
     return (
-      <div className="min-h-screen bg-neutral-950 text-neutral-100 flex flex-col items-center justify-center p-4">
-        <div className="w-full max-w-md bg-neutral-900 border border-neutral-800 rounded-3xl p-6 sm:p-8 shadow-2xl relative">
-          <div className="text-center mb-6">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-600 to-amber-400 text-neutral-950 font-black flex items-center justify-center mx-auto mb-3 shadow-lg">
-              <Lock className="w-6 h-6" />
+      <div className="min-h-screen bg-neutral-950 text-neutral-100 flex flex-col items-center justify-center p-3 sm:p-4">
+        <div className="w-full max-w-md bg-neutral-900 border border-neutral-800 rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-2xl relative">
+          <div className="text-center mb-5 sm:mb-6">
+            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-tr from-amber-600 to-amber-400 text-neutral-950 font-black flex items-center justify-center mx-auto mb-2.5 sm:mb-3 shadow-lg">
+              <Lock className="w-5 h-5 sm:w-6 sm:h-6" />
             </div>
-            <h1 className="text-xl sm:text-2xl font-black text-white">BikePlate BD Admin</h1>
-            <p className="text-xs text-neutral-400 mt-1">অর্ডার ম্যানেজমেন্ট কন্ট্রোল প্যানেল</p>
+            <h1 className="text-lg sm:text-2xl font-black text-white">BikePlate BD Admin</h1>
+            <p className="text-[11px] sm:text-xs text-neutral-400 mt-1">অর্ডার ম্যানেজমেন্ট কন্ট্রোল প্যানেল</p>
           </div>
 
-          <form onSubmit={handleLogin} className="space-y-4">
+          <form onSubmit={handleLogin} className="space-y-3.5 sm:space-y-4">
             <div>
               <label className="text-xs font-bold text-neutral-300 block mb-1.5">
                 অ্যাডমিন পাসওয়ার্ড দিন
@@ -195,12 +196,12 @@ export default function AdminClient() {
                   onChange={(e) => setPasswordInput(e.target.value)}
                   placeholder="পাসওয়ার্ড লিখুন..."
                   autoFocus
-                  className="w-full px-4 py-3 bg-neutral-950 border border-neutral-800 rounded-xl text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-amber-400 pr-10 font-mono"
+                  className="w-full px-3.5 sm:px-4 py-2.5 sm:py-3 bg-neutral-950 border border-neutral-800 rounded-xl text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-amber-400 pr-10 font-mono"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-white cursor-pointer"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-white cursor-pointer p-1"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -208,7 +209,7 @@ export default function AdminClient() {
             </div>
 
             {authError && (
-              <div className="p-3 bg-red-950/60 border border-red-800/80 rounded-xl text-red-300 text-xs flex items-center gap-2">
+              <div className="p-2.5 sm:p-3 bg-red-950/60 border border-red-800/80 rounded-xl text-red-300 text-xs flex items-center gap-2">
                 <AlertCircle className="w-4 h-4 shrink-0" />
                 <span>{authError}</span>
               </div>
@@ -216,18 +217,18 @@ export default function AdminClient() {
 
             <button
               type="submit"
-              className="w-full bg-amber-400 hover:bg-amber-300 text-neutral-950 font-bold py-3 rounded-xl transition shadow-md cursor-pointer text-sm"
+              className="w-full bg-amber-400 hover:bg-amber-300 text-neutral-950 font-bold py-2.5 sm:py-3 rounded-xl transition shadow-md cursor-pointer text-xs sm:text-sm"
             >
               ড্যাশবোর্ডে লগইন করুন
             </button>
 
-            <div className="pt-2 text-center">
+            <div className="pt-1.5 text-center">
               <span className="text-[11px] text-neutral-400 bg-neutral-800/80 px-2.5 py-1 rounded-md font-mono inline-block">
                 ডিফল্ট পাসওয়ার্ড: <span className="text-amber-400 font-bold">admin123</span>
               </span>
             </div>
 
-            <div className="pt-3 border-t border-neutral-800/80 text-center">
+            <div className="pt-2.5 border-t border-neutral-800/80 text-center">
               <Link
                 href="/"
                 className="text-xs text-neutral-400 hover:text-white transition inline-flex items-center gap-1"
@@ -244,43 +245,48 @@ export default function AdminClient() {
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-100 flex flex-col">
       {/* Top Bar */}
-      <header className="bg-neutral-900 border-b border-neutral-800 px-4 sm:px-6 py-3 sm:py-4 sticky top-0 z-30">
-        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-2.5">
-            <div className="bg-amber-500 text-black font-black px-2 py-0.5 rounded-lg text-base sm:text-lg">
+      <header className="bg-neutral-900 border-b border-neutral-800 px-3 sm:px-6 py-2.5 sm:py-3.5 sticky top-0 z-30 backdrop-blur-md bg-neutral-900/95">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-2 sm:gap-4">
+          <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
+            <div className="bg-amber-400 text-neutral-950 font-black px-2 py-0.5 rounded-lg text-sm sm:text-base shrink-0 shadow-xs">
               BP
             </div>
-            <div>
-              <h1 className="font-bold text-base sm:text-lg leading-tight">BikePlate BD Admin</h1>
-              <p className="text-[10px] sm:text-xs text-neutral-400">অর্ডার ও পেমেন্ট পোর্টাল</p>
+            <div className="min-w-0">
+              <h1 className="font-bold text-sm sm:text-base leading-tight truncate">
+                BikePlate BD <span className="hidden min-[480px]:inline text-xs font-normal text-amber-400">Admin</span>
+              </h1>
+              <p className="text-[10px] text-neutral-400 truncate hidden sm:block">অর্ডার ও পেমেন্ট কন্ট্রোল প্যানেল</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             <Link
               href="/"
               target="_blank"
-              className="text-xs bg-neutral-800 hover:bg-neutral-700 text-neutral-300 px-2.5 py-1.5 rounded-lg transition flex items-center gap-1"
+              className="text-xs bg-neutral-800 hover:bg-neutral-700 text-neutral-300 px-2 sm:px-2.5 py-1.5 rounded-lg transition flex items-center gap-1"
+              title="মূল ওয়েবসাইট দেখুন"
             >
-              <span>ওয়েবসাইট</span>
-              <ExternalLink className="w-3 h-3" />
+              <ExternalLink className="w-3.5 h-3.5 text-neutral-400" />
+              <span className="hidden sm:inline">ওয়েবসাইট</span>
             </Link>
 
             <a
               href="/api/admin/export"
-              className="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-2.5 py-1.5 rounded-lg transition flex items-center gap-1"
+              className="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-2 sm:px-2.5 py-1.5 rounded-lg transition flex items-center gap-1 shadow-xs"
+              title="CSV রিপোর্ট ডাউনলোড করুন"
             >
-              <Download className="w-3 h-3" />
-              <span>CSV রিপোর্ট</span>
+              <Download className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">CSV রিপোর্ট</span>
             </a>
 
             <button
               type="button"
               onClick={handleLogout}
-              className="text-xs bg-red-950/60 hover:bg-red-900 border border-red-800/60 text-red-200 px-2.5 py-1.5 rounded-lg transition flex items-center gap-1 cursor-pointer"
+              className="text-xs bg-red-950/60 hover:bg-red-900 border border-red-800/60 text-red-200 px-2 sm:px-2.5 py-1.5 rounded-lg transition flex items-center gap-1 cursor-pointer"
+              title="লগআউট"
             >
-              <LogOut className="w-3 h-3" />
-              <span>লগআউট</span>
+              <LogOut className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">লগআউট</span>
             </button>
           </div>
         </div>
@@ -289,12 +295,12 @@ export default function AdminClient() {
       {/* Main Container */}
       <main className="max-w-7xl mx-auto w-full p-3 sm:p-6 flex-1">
         {/* Navigation Tabs */}
-        <div className="flex overflow-x-auto border-b border-neutral-800 mb-5 gap-1 sm:gap-2">
+        <div className="flex overflow-x-auto scrollbar-none border-b border-neutral-800 mb-4 sm:mb-6 gap-1 sm:gap-2 -mx-3 px-3 sm:mx-0 sm:px-0">
           <button
             onClick={() => setActiveTab("orders")}
-            className={`px-5 py-3 font-semibold text-sm transition border-b-2 flex items-center gap-2 ${
+            className={`px-3.5 sm:px-5 py-2.5 sm:py-3 font-semibold text-xs sm:text-sm transition border-b-2 flex items-center gap-1.5 sm:gap-2 whitespace-nowrap shrink-0 cursor-pointer ${
               activeTab === "orders"
-                ? "border-amber-500 text-amber-400"
+                ? "border-amber-400 text-amber-400"
                 : "border-transparent text-neutral-400 hover:text-neutral-200"
             }`}
           >
@@ -304,9 +310,9 @@ export default function AdminClient() {
 
           <button
             onClick={() => setActiveTab("settings")}
-            className={`px-5 py-3 font-semibold text-sm transition border-b-2 flex items-center gap-2 ${
+            className={`px-3.5 sm:px-5 py-2.5 sm:py-3 font-semibold text-xs sm:text-sm transition border-b-2 flex items-center gap-1.5 sm:gap-2 whitespace-nowrap shrink-0 cursor-pointer ${
               activeTab === "settings"
-                ? "border-amber-500 text-amber-400"
+                ? "border-amber-400 text-amber-400"
                 : "border-transparent text-neutral-400 hover:text-neutral-200"
             }`}
           >
@@ -316,9 +322,9 @@ export default function AdminClient() {
 
           <button
             onClick={() => setActiveTab("analytics")}
-            className={`px-5 py-3 font-semibold text-sm transition border-b-2 flex items-center gap-2 ${
+            className={`px-3.5 sm:px-5 py-2.5 sm:py-3 font-semibold text-xs sm:text-sm transition border-b-2 flex items-center gap-1.5 sm:gap-2 whitespace-nowrap shrink-0 cursor-pointer ${
               activeTab === "analytics"
-                ? "border-amber-500 text-amber-400"
+                ? "border-amber-400 text-amber-400"
                 : "border-transparent text-neutral-400 hover:text-neutral-200"
             }`}
           >
@@ -329,81 +335,81 @@ export default function AdminClient() {
 
         {/* Tab 1: Orders */}
         {activeTab === "orders" && (
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             {/* KPI Cards */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="bg-neutral-900 border border-neutral-800 p-5 rounded-2xl">
-                <div className="flex items-center justify-between text-neutral-400 mb-2">
-                  <span className="text-xs">মোট অর্ডার</span>
-                  <Package className="w-4 h-4 text-amber-400" />
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
+              <div className="bg-neutral-900 border border-neutral-800 p-3 sm:p-5 rounded-xl sm:rounded-2xl">
+                <div className="flex items-center justify-between text-neutral-400 mb-1.5">
+                  <span className="text-[11px] sm:text-xs">মোট অর্ডার</span>
+                  <Package className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-400" />
                 </div>
-                <div className="text-2xl font-bold font-mono">{stats.totalOrders}</div>
-                <div className="text-[11px] text-neutral-500 mt-1">সিস্টেমে সংরক্ষিত সমস্ত অর্ডার</div>
+                <div className="text-xl sm:text-2xl font-bold font-mono text-white">{stats.totalOrders}</div>
+                <div className="text-[10px] sm:text-[11px] text-neutral-500 mt-0.5 sm:mt-1 truncate">সংরক্ষিত সমস্ত অর্ডার</div>
               </div>
 
-              <div className="bg-neutral-900 border border-neutral-800 p-5 rounded-2xl">
-                <div className="flex items-center justify-between text-neutral-400 mb-2">
-                  <span className="text-xs">মোট অর্ডারের মূল্য</span>
-                  <DollarSign className="w-4 h-4 text-emerald-400" />
+              <div className="bg-neutral-900 border border-neutral-800 p-3 sm:p-5 rounded-xl sm:rounded-2xl">
+                <div className="flex items-center justify-between text-neutral-400 mb-1.5">
+                  <span className="text-[11px] sm:text-xs">মোট বিক্রয় মূল্য</span>
+                  <DollarSign className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-400" />
                 </div>
-                <div className="text-2xl font-bold font-mono text-emerald-400">৳ {stats.totalRevenue}</div>
-                <div className="text-[11px] text-neutral-500 mt-1">বাতিল ব্যতীত সমস্ত অর্ডার ভলিউম</div>
+                <div className="text-xl sm:text-2xl font-bold font-mono text-emerald-400">৳ {stats.totalRevenue}</div>
+                <div className="text-[10px] sm:text-[11px] text-neutral-500 mt-0.5 sm:mt-1 truncate">বাতিল ব্যতীত সর্বমোট ভলিউম</div>
               </div>
 
-              <div className="bg-neutral-900 border border-neutral-800 p-5 rounded-2xl">
-                <div className="flex items-center justify-between text-neutral-400 mb-2">
-                  <span className="text-xs">বিকাশ অগ্রিম আদায়</span>
-                  <CreditCard className="w-4 h-4 text-[#E2136E]" />
+              <div className="bg-neutral-900 border border-neutral-800 p-3 sm:p-5 rounded-xl sm:rounded-2xl">
+                <div className="flex items-center justify-between text-neutral-400 mb-1.5">
+                  <span className="text-[11px] sm:text-xs">বিকাশ অগ্রিম আদায়</span>
+                  <CreditCard className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#E2136E]" />
                 </div>
-                <div className="text-2xl font-bold font-mono text-pink-400">৳ {stats.totalAdvanceCollected}</div>
-                <div className="text-[11px] text-neutral-500 mt-1">সরাসরি বিকাশ গেটওয়েতে জমা</div>
+                <div className="text-xl sm:text-2xl font-bold font-mono text-pink-400">৳ {stats.totalAdvanceCollected}</div>
+                <div className="text-[10px] sm:text-[11px] text-neutral-500 mt-0.5 sm:mt-1 truncate">সরাসরি বিকাশ গেটওয়েতে জমা</div>
               </div>
 
-              <div className="bg-neutral-900 border border-neutral-800 p-5 rounded-2xl">
-                <div className="flex items-center justify-between text-neutral-400 mb-2">
-                  <span className="text-xs">বাকি COD আদায়যোগ্য</span>
-                  <Truck className="w-4 h-4 text-amber-400" />
+              <div className="bg-neutral-900 border border-neutral-800 p-3 sm:p-5 rounded-xl sm:rounded-2xl">
+                <div className="flex items-center justify-between text-neutral-400 mb-1.5">
+                  <span className="text-[11px] sm:text-xs">বাকি COD পাওনা</span>
+                  <Truck className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-400" />
                 </div>
-                <div className="text-2xl font-bold font-mono text-amber-400">৳ {stats.totalCodPending}</div>
-                <div className="text-[11px] text-neutral-500 mt-1">ডেলিভারির পর কুরিয়ার থেকে প্রাপ্তব্য</div>
+                <div className="text-xl sm:text-2xl font-bold font-mono text-amber-400">৳ {stats.totalCodPending}</div>
+                <div className="text-[10px] sm:text-[11px] text-neutral-500 mt-0.5 sm:mt-1 truncate">কুরিয়ার থেকে ডেলিভারিতে প্রাপ্য</div>
               </div>
             </div>
 
             {/* Filter and Search Bar */}
-            <div className="bg-neutral-900 border border-neutral-800 p-4 rounded-2xl flex flex-wrap items-center justify-between gap-4">
+            <div className="bg-neutral-900 border border-neutral-800 p-3 sm:p-4 rounded-xl sm:rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-3">
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
                   fetchOrders();
                 }}
-                className="flex items-center gap-2 flex-1 max-w-md"
+                className="flex items-center gap-2 w-full md:max-w-md"
               >
-                <div className="relative w-full">
+                <div className="relative flex-1">
                   <Search className="w-4 h-4 text-neutral-500 absolute left-3 top-1/2 -translate-y-1/2" />
                   <input
                     type="text"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     placeholder="নাম, ফোন, অর্ডার নং বা প্লেটের লেখা..."
-                    className="w-full pl-9 pr-3 py-2 bg-neutral-950 border border-neutral-800 rounded-xl text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-amber-500"
+                    className="w-full pl-9 pr-3 py-2 bg-neutral-950 border border-neutral-800 rounded-xl text-xs sm:text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-amber-400"
                   />
                 </div>
                 <button
                   type="submit"
-                  className="bg-neutral-800 hover:bg-neutral-700 text-xs font-semibold px-4 py-2.5 rounded-xl transition"
+                  className="bg-neutral-800 hover:bg-neutral-700 text-neutral-200 text-xs font-semibold px-3.5 py-2 rounded-xl transition shrink-0 cursor-pointer"
                 >
                   খুঁজুন
                 </button>
               </form>
 
-              <div className="flex flex-wrap items-center gap-3">
-                <div className="flex items-center gap-2 text-xs text-neutral-400">
-                  <Filter className="w-3.5 h-3.5" />
-                  <span>অর্ডার স্ট্যাটাস:</span>
+              <div className="flex flex-wrap items-center justify-between sm:justify-start gap-2 text-xs">
+                <div className="flex items-center gap-1.5 text-neutral-400 flex-1 min-[420px]:flex-none">
+                  <Filter className="w-3.5 h-3.5 shrink-0 hidden min-[520px]:inline text-neutral-400" />
+                  <span className="text-[11px] sm:text-xs">স্ট্যাটাস:</span>
                   <select
                     value={statusFilter}
                     onChange={(e) => setStatusFilter(e.target.value)}
-                    className="bg-neutral-950 border border-neutral-800 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none"
+                    className="flex-1 min-[420px]:flex-none bg-neutral-950 border border-neutral-800 rounded-lg px-2 py-1.5 text-[11px] sm:text-xs text-white focus:outline-none cursor-pointer"
                   >
                     <option value="all">সব স্ট্যাটাস</option>
                     <option value="Pending">Pending</option>
@@ -416,12 +422,12 @@ export default function AdminClient() {
                   </select>
                 </div>
 
-                <div className="flex items-center gap-2 text-xs text-neutral-400">
-                  <span>পেমেন্ট:</span>
+                <div className="flex items-center gap-1.5 text-neutral-400 flex-1 min-[420px]:flex-none">
+                  <span className="text-[11px] sm:text-xs">পেমেন্ট:</span>
                   <select
                     value={paymentFilter}
                     onChange={(e) => setPaymentFilter(e.target.value)}
-                    className="bg-neutral-950 border border-neutral-800 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none"
+                    className="flex-1 min-[420px]:flex-none bg-neutral-950 border border-neutral-800 rounded-lg px-2 py-1.5 text-[11px] sm:text-xs text-white focus:outline-none cursor-pointer"
                   >
                     <option value="all">সব পেমেন্ট</option>
                     <option value="Unpaid">Unpaid</option>
@@ -433,7 +439,7 @@ export default function AdminClient() {
 
                 <button
                   onClick={fetchOrders}
-                  className="p-2 bg-neutral-800 hover:bg-neutral-700 rounded-lg text-neutral-300 transition"
+                  className="p-2 bg-neutral-800 hover:bg-neutral-700 rounded-lg text-neutral-300 transition shrink-0 cursor-pointer"
                   title="রিফ্রেশ"
                 >
                   <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />
@@ -441,8 +447,139 @@ export default function AdminClient() {
               </div>
             </div>
 
-            {/* Orders Table */}
-            <div className="bg-neutral-900 border border-neutral-800 rounded-2xl overflow-hidden shadow">
+            {/* Mobile Order Cards View (visible on screens < md) */}
+            <div className="md:hidden space-y-3">
+              {orders.length === 0 ? (
+                <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-8 text-center text-neutral-500 text-xs">
+                  {loading ? "অর্ডার লোড হচ্ছে..." : "কোনো অর্ডার পাওয়া যায়নি"}
+                </div>
+              ) : (
+                orders.map((order) => {
+                  const item = order.items[0];
+                  return (
+                    <div
+                      key={order.id}
+                      className="bg-neutral-900 border border-neutral-800 rounded-xl p-3.5 space-y-3 shadow-xs"
+                    >
+                      {/* Card Header: Order #, Date & View Details */}
+                      <div className="flex items-center justify-between pb-2 border-b border-neutral-800/80">
+                        <div>
+                          <span className="font-mono font-bold text-amber-400 text-sm block">
+                            {order.orderNumber}
+                          </span>
+                          <span className="text-[10px] text-neutral-500">
+                            {new Date(order.createdAt).toLocaleDateString("bn-BD")}
+                          </span>
+                        </div>
+                        <button
+                          onClick={() => setSelectedOrder(order)}
+                          className="px-2.5 py-1.5 bg-neutral-800 hover:bg-neutral-700 text-neutral-200 rounded-lg text-xs font-semibold flex items-center gap-1 transition cursor-pointer"
+                        >
+                          <Eye className="w-3.5 h-3.5 text-amber-400" />
+                          <span>বিস্তারিত</span>
+                        </button>
+                      </div>
+
+                      {/* Customer & Plate Info */}
+                      <div className="grid grid-cols-2 gap-2 text-xs">
+                        <div className="min-w-0">
+                          <span className="text-[10px] text-neutral-500 block">গ্রাহকের নাম:</span>
+                          <span className="font-semibold text-white block truncate">{order.customerName}</span>
+                          <a
+                            href={`tel:${order.customerPhone}`}
+                            className="font-mono text-amber-400/90 text-[11px] inline-flex items-center gap-1 hover:underline mt-0.5"
+                          >
+                            <Phone className="w-2.5 h-2.5 shrink-0" />
+                            <span className="truncate">{order.customerPhone}</span>
+                          </a>
+                        </div>
+                        <div className="min-w-0">
+                          <span className="text-[10px] text-neutral-500 block">প্লেটের নম্বর:</span>
+                          <span className="font-mono font-bold text-white bg-neutral-950 px-2 py-0.5 rounded border border-neutral-800 text-[11px] inline-block truncate max-w-full">
+                            {item?.customDetails?.fullPlateText || "N/A"}
+                          </span>
+                          <span className="text-[10px] text-neutral-400 block truncate mt-0.5">
+                            {order.district}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Financials Strip */}
+                      <div className="grid grid-cols-3 gap-1.5 bg-neutral-950 p-2.5 rounded-lg border border-neutral-800/80 text-center">
+                        <div>
+                          <span className="text-[10px] text-neutral-400 block">মোট বিল</span>
+                          <span className="font-mono font-bold text-white text-xs">৳{order.totalPayable}</span>
+                        </div>
+                        <div>
+                          <span className="text-[10px] text-neutral-400 block">অগ্রিম</span>
+                          <span className="font-mono font-bold text-pink-400 text-xs">৳{order.advanceAmount}</span>
+                        </div>
+                        <div>
+                          <span className="text-[10px] text-neutral-400 block">বাকি COD</span>
+                          <span className="font-mono font-bold text-amber-400 text-xs">৳{order.remainingCodAmount}</span>
+                        </div>
+                      </div>
+
+                      {/* Status Dropdowns */}
+                      <div className="grid grid-cols-2 gap-2 pt-1 text-xs">
+                        <div>
+                          <label className="text-[10px] text-neutral-400 block mb-1">পেমেন্ট স্ট্যাটাস:</label>
+                          <select
+                            value={order.paymentStatus}
+                            onChange={(e) =>
+                              handleStatusUpdate(order.id, {
+                                paymentStatus: e.target.value as PaymentStatus,
+                              })
+                            }
+                            className={`w-full text-xs font-semibold rounded-lg px-2 py-1.5 border border-neutral-700 bg-neutral-950 focus:outline-none cursor-pointer ${
+                              order.paymentStatus === "Fully Paid"
+                                ? "text-emerald-400"
+                                : order.paymentStatus === "Advance Paid"
+                                ? "text-amber-400"
+                                : order.paymentStatus === "Failed"
+                                ? "text-rose-400"
+                                : "text-neutral-300"
+                            }`}
+                          >
+                            <option value="Unpaid">Unpaid</option>
+                            <option value="Advance Paid">Advance Paid</option>
+                            <option value="Fully Paid">Fully Paid</option>
+                            <option value="Partially Paid">Partially Paid</option>
+                            <option value="Failed">Failed</option>
+                            <option value="Refunded">Refunded</option>
+                          </select>
+                        </div>
+
+                        <div>
+                          <label className="text-[10px] text-neutral-400 block mb-1">অর্ডার স্ট্যাটাস:</label>
+                          <select
+                            value={order.orderStatus}
+                            onChange={(e) =>
+                              handleStatusUpdate(order.id, {
+                                orderStatus: e.target.value as OrderStatus,
+                              })
+                            }
+                            className="w-full text-xs font-semibold rounded-lg px-2 py-1.5 border border-neutral-700 bg-neutral-950 text-white focus:outline-none cursor-pointer"
+                          >
+                            <option value="Pending">Pending</option>
+                            <option value="Awaiting Payment">Awaiting Payment</option>
+                            <option value="Confirmed">Confirmed</option>
+                            <option value="Processing">Processing</option>
+                            <option value="Shipped">Shipped</option>
+                            <option value="Delivered">Delivered</option>
+                            <option value="Cancelled">Cancelled</option>
+                            <option value="Refunded">Refunded</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+
+            {/* Desktop Table View (visible on screens >= md) */}
+            <div className="hidden md:block bg-neutral-900 border border-neutral-800 rounded-2xl overflow-hidden shadow">
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
                   <thead className="bg-neutral-950/80 text-neutral-400 border-b border-neutral-800">
@@ -513,7 +650,7 @@ export default function AdminClient() {
                                     paymentStatus: e.target.value as PaymentStatus,
                                   })
                                 }
-                                className={`text-[11px] font-semibold rounded-md px-2 py-1 border border-neutral-700 bg-neutral-950 focus:outline-none ${
+                                className={`text-[11px] font-semibold rounded-md px-2 py-1 border border-neutral-700 bg-neutral-950 focus:outline-none cursor-pointer ${
                                   order.paymentStatus === "Fully Paid"
                                     ? "text-emerald-400"
                                     : order.paymentStatus === "Advance Paid"
@@ -539,7 +676,7 @@ export default function AdminClient() {
                                     orderStatus: e.target.value as OrderStatus,
                                   })
                                 }
-                                className="text-[11px] font-semibold rounded-md px-2 py-1 border border-neutral-700 bg-neutral-950 text-white focus:outline-none"
+                                className="text-[11px] font-semibold rounded-md px-2 py-1 border border-neutral-700 bg-neutral-950 text-white focus:outline-none cursor-pointer"
                               >
                                 <option value="Pending">Pending</option>
                                 <option value="Awaiting Payment">Awaiting Payment</option>
@@ -554,7 +691,7 @@ export default function AdminClient() {
                             <td className="p-3.5 text-right whitespace-nowrap">
                               <button
                                 onClick={() => setSelectedOrder(order)}
-                                className="p-1.5 bg-neutral-800 hover:bg-neutral-700 text-neutral-300 rounded-lg transition"
+                                className="p-1.5 bg-neutral-800 hover:bg-neutral-700 text-neutral-300 rounded-lg transition cursor-pointer"
                                 title="বিস্তারিত দেখুন"
                               >
                                 <Eye className="w-4 h-4" />
@@ -573,20 +710,20 @@ export default function AdminClient() {
 
         {/* Tab 2: Settings & Discounts */}
         {activeTab === "settings" && settings && (
-          <form onSubmit={handleSaveSettings} className="max-w-3xl mx-auto space-y-6">
-            <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6">
-              <div className="flex items-center gap-2 mb-4 pb-3 border-b border-neutral-800">
-                <Percent className="w-5 h-5 text-amber-400" />
-                <h2 className="font-bold text-base">অগ্রিম পেমেন্ট ও ৩০% ডিসকাউন্ট পলিসি</h2>
+          <form onSubmit={handleSaveSettings} className="max-w-3xl mx-auto space-y-4 sm:space-y-6">
+            <div className="bg-neutral-900 border border-neutral-800 rounded-xl sm:rounded-2xl p-4 sm:p-6">
+              <div className="flex items-center gap-2 mb-3 sm:mb-4 pb-2.5 sm:pb-3 border-b border-neutral-800">
+                <Percent className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400" />
+                <h2 className="font-bold text-sm sm:text-base">অগ্রিম পেমেন্ট ও ৩০% ডিসকাউন্ট পলিসি</h2>
               </div>
 
-              <div className="space-y-4">
-                <div className="flex items-center justify-between p-3 bg-neutral-950 rounded-xl border border-neutral-800">
-                  <div>
-                    <label className="text-sm font-semibold text-white block">
+              <div className="space-y-3.5 sm:space-y-4">
+                <div className="flex items-center justify-between p-3 sm:p-3.5 bg-neutral-950 rounded-xl border border-neutral-800 gap-3">
+                  <div className="min-w-0">
+                    <label className="text-xs sm:text-sm font-semibold text-white block">
                       ৩০% স্পেশাল ডিসকাউন্ট অফার চালু রাখুন
                     </label>
-                    <p className="text-xs text-neutral-400">
+                    <p className="text-[11px] sm:text-xs text-neutral-400">
                       সক্ষম থাকলে গ্রাহক অগ্রিম পরিশোধ করলে নির্ধারিত হারে ছাড় পাবে
                     </p>
                   </div>
@@ -596,11 +733,11 @@ export default function AdminClient() {
                     onChange={(e) =>
                       setSettings({ ...settings, discountOfferEnabled: e.target.checked })
                     }
-                    className="w-5 h-5 accent-amber-500 rounded cursor-pointer"
+                    className="w-5 h-5 accent-amber-500 rounded cursor-pointer shrink-0"
                   />
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div>
                     <label className="text-xs font-semibold text-neutral-300 block mb-1">
                       ডিসকাউন্ট শতকরা (%)
@@ -614,7 +751,7 @@ export default function AdminClient() {
                           discountPercentage: Number(e.target.value) || 0,
                         })
                       }
-                      className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-xl text-white font-mono text-sm"
+                      className="w-full px-3 py-2 sm:py-2.5 bg-neutral-950 border border-neutral-800 rounded-xl text-white font-mono text-xs sm:text-sm focus:outline-none focus:border-amber-400"
                     />
                   </div>
 
@@ -631,7 +768,7 @@ export default function AdminClient() {
                           minAdvanceAmount: Number(e.target.value) || 0,
                         })
                       }
-                      className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-xl text-white font-mono text-sm"
+                      className="w-full px-3 py-2 sm:py-2.5 bg-neutral-950 border border-neutral-800 rounded-xl text-white font-mono text-xs sm:text-sm focus:outline-none focus:border-amber-400"
                     />
                   </div>
                 </div>
@@ -639,13 +776,13 @@ export default function AdminClient() {
             </div>
 
             {/* Delivery and Package Prices */}
-            <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6">
-              <div className="flex items-center gap-2 mb-4 pb-3 border-b border-neutral-800">
-                <DollarSign className="w-5 h-5 text-emerald-400" />
-                <h2 className="font-bold text-base">প্যাকেজ মূল্য ও ডেলিভারি চার্জ</h2>
+            <div className="bg-neutral-900 border border-neutral-800 rounded-xl sm:rounded-2xl p-4 sm:p-6">
+              <div className="flex items-center gap-2 mb-3 sm:mb-4 pb-2.5 sm:pb-3 border-b border-neutral-800">
+                <DollarSign className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-400" />
+                <h2 className="font-bold text-sm sm:text-base">প্যাকেজ মূল্য ও ডেলিভারি চার্জ</h2>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-3 sm:mb-4">
                 <div>
                   <label className="text-xs font-semibold text-neutral-300 block mb-1">
                     সামনের প্লেটের মূল্য (৳)
@@ -659,7 +796,7 @@ export default function AdminClient() {
                         frontPlatePrice: Number(e.target.value) || 0,
                       })
                     }
-                    className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-xl text-white font-mono text-sm"
+                    className="w-full px-3 py-2 sm:py-2.5 bg-neutral-950 border border-neutral-800 rounded-xl text-white font-mono text-xs sm:text-sm focus:outline-none focus:border-amber-400"
                   />
                 </div>
 
@@ -676,7 +813,7 @@ export default function AdminClient() {
                         backPlatePrice: Number(e.target.value) || 0,
                       })
                     }
-                    className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-xl text-white font-mono text-sm"
+                    className="w-full px-3 py-2 sm:py-2.5 bg-neutral-950 border border-neutral-800 rounded-xl text-white font-mono text-xs sm:text-sm focus:outline-none focus:border-amber-400"
                   />
                 </div>
 
@@ -693,12 +830,12 @@ export default function AdminClient() {
                         comboPlatePrice: Number(e.target.value) || 0,
                       })
                     }
-                    className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-xl text-white font-mono text-sm"
+                    className="w-full px-3 py-2 sm:py-2.5 bg-neutral-950 border border-neutral-800 rounded-xl text-white font-mono text-xs sm:text-sm focus:outline-none focus:border-amber-400"
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div>
                   <label className="text-xs font-semibold text-neutral-300 block mb-1">
                     ঢাকার ভিতরে ডেলিভারি চার্জ (৳)
@@ -712,7 +849,7 @@ export default function AdminClient() {
                         shippingInsideDhaka: Number(e.target.value) || 0,
                       })
                     }
-                    className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-xl text-white font-mono text-sm"
+                    className="w-full px-3 py-2 sm:py-2.5 bg-neutral-950 border border-neutral-800 rounded-xl text-white font-mono text-xs sm:text-sm focus:outline-none focus:border-amber-400"
                   />
                 </div>
 
@@ -729,19 +866,19 @@ export default function AdminClient() {
                         shippingOutsideDhaka: Number(e.target.value) || 0,
                       })
                     }
-                    className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-xl text-white font-mono text-sm"
+                    className="w-full px-3 py-2 sm:py-2.5 bg-neutral-950 border border-neutral-800 rounded-xl text-white font-mono text-xs sm:text-sm focus:outline-none focus:border-amber-400"
                   />
                 </div>
               </div>
             </div>
 
             {/* Announcement Banner & Contacts */}
-            <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6">
-              <h2 className="font-bold text-base mb-4 pb-3 border-b border-neutral-800">
+            <div className="bg-neutral-900 border border-neutral-800 rounded-xl sm:rounded-2xl p-4 sm:p-6">
+              <h2 className="font-bold text-sm sm:text-base mb-3 sm:mb-4 pb-2.5 sm:pb-3 border-b border-neutral-800">
                 হেডার নোটিশ ও কন্টাক্ট ইনফরমেশন
               </h2>
 
-              <div className="space-y-4">
+              <div className="space-y-3.5 sm:space-y-4">
                 <div>
                   <label className="text-xs font-semibold text-neutral-300 block mb-1">
                     টপ ব্যানার ঘোষণা বার্তা (Announcement Text)
@@ -752,11 +889,11 @@ export default function AdminClient() {
                     onChange={(e) =>
                       setSettings({ ...settings, announcementText: e.target.value })
                     }
-                    className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-xl text-white text-sm"
+                    className="w-full px-3 py-2 sm:py-2.5 bg-neutral-950 border border-neutral-800 rounded-xl text-white text-xs sm:text-sm focus:outline-none focus:border-amber-400"
                   />
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div>
                     <label className="text-xs font-semibold text-neutral-300 block mb-1">
                       হটলাইন ফোন নম্বর
@@ -767,7 +904,7 @@ export default function AdminClient() {
                       onChange={(e) =>
                         setSettings({ ...settings, hotlinePhone: e.target.value })
                       }
-                      className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-xl text-white font-mono text-sm"
+                      className="w-full px-3 py-2 sm:py-2.5 bg-neutral-950 border border-neutral-800 rounded-xl text-white font-mono text-xs sm:text-sm focus:outline-none focus:border-amber-400"
                     />
                   </div>
 
@@ -781,7 +918,7 @@ export default function AdminClient() {
                       onChange={(e) =>
                         setSettings({ ...settings, whatsappNumber: e.target.value })
                       }
-                      className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-xl text-white font-mono text-sm"
+                      className="w-full px-3 py-2 sm:py-2.5 bg-neutral-950 border border-neutral-800 rounded-xl text-white font-mono text-xs sm:text-sm focus:outline-none focus:border-amber-400"
                     />
                   </div>
                 </div>
@@ -790,7 +927,7 @@ export default function AdminClient() {
 
             {saveSuccessMsg && (
               <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-xl text-xs flex items-center gap-2">
-                <CheckCircle className="w-4 h-4" />
+                <CheckCircle className="w-4 h-4 shrink-0" />
                 <span>{saveSuccessMsg}</span>
               </div>
             )}
@@ -798,7 +935,7 @@ export default function AdminClient() {
             <button
               type="submit"
               disabled={isUpdating}
-              className="w-full bg-amber-500 hover:bg-amber-400 text-black font-bold py-3.5 rounded-2xl transition disabled:opacity-50"
+              className="w-full bg-amber-400 hover:bg-amber-300 text-neutral-950 font-bold py-3 sm:py-3.5 px-4 rounded-xl sm:rounded-2xl transition disabled:opacity-50 cursor-pointer text-xs sm:text-sm shadow-md"
             >
               {isUpdating ? "সংরক্ষণ হচ্ছে..." : "সকল পরিবর্তন সংরক্ষণ করুন"}
             </button>
@@ -807,42 +944,42 @@ export default function AdminClient() {
 
         {/* Tab 3: Analytics Overview */}
         {activeTab === "analytics" && (
-          <div className="max-w-4xl mx-auto space-y-6">
-            <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6">
-              <h2 className="font-bold text-base mb-4 pb-3 border-b border-neutral-800">
+          <div className="max-w-4xl mx-auto space-y-4 sm:space-y-6">
+            <div className="bg-neutral-900 border border-neutral-800 rounded-xl sm:rounded-2xl p-4 sm:p-6">
+              <h2 className="font-bold text-sm sm:text-base mb-3 sm:mb-4 pb-2.5 sm:pb-3 border-b border-neutral-800">
                 স্ট্যাটাস ভিত্তিক অর্ডার বিশ্লেষণ
               </h2>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-4">
                 {Object.entries(stats.statusCounts).map(([statusKey, count]) => (
-                  <div key={statusKey} className="bg-neutral-950 p-4 rounded-xl border border-neutral-800">
-                    <p className="text-xs text-neutral-400">{statusKey}</p>
-                    <p className="text-xl font-bold font-mono text-amber-400 mt-1">{count}</p>
+                  <div key={statusKey} className="bg-neutral-950 p-3 sm:p-4 rounded-xl border border-neutral-800">
+                    <p className="text-[11px] sm:text-xs text-neutral-400 truncate">{statusKey}</p>
+                    <p className="text-lg sm:text-xl font-bold font-mono text-amber-400 mt-1">{count}</p>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6">
-              <h2 className="font-bold text-base mb-3 pb-3 border-b border-neutral-800">
+            <div className="bg-neutral-900 border border-neutral-800 rounded-xl sm:rounded-2xl p-4 sm:p-6">
+              <h2 className="font-bold text-sm sm:text-base mb-3 pb-2.5 border-b border-neutral-800">
                 অফিসিয়াল পেমেন্ট ইন্টিগ্রেশন স্ট্যাটাস
               </h2>
-              <div className="space-y-3 text-xs">
-                <div className="flex items-center justify-between p-3 bg-neutral-950 rounded-xl border border-neutral-800">
+              <div className="space-y-2.5 sm:space-y-3 text-xs">
+                <div className="flex items-center justify-between p-2.5 sm:p-3 bg-neutral-950 rounded-xl border border-neutral-800 gap-2">
                   <span className="font-semibold text-neutral-300">ক্যাশ অন ডেলিভারি (COD):</span>
-                  <span className="text-emerald-400 font-bold flex items-center gap-1">
-                    <CheckCircle className="w-4 h-4" /> সক্রিয় ও পরীক্ষিত
+                  <span className="text-emerald-400 font-bold flex items-center gap-1 text-[11px] sm:text-xs shrink-0">
+                    <CheckCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> সক্রিয় ও পরীক্ষিত
                   </span>
                 </div>
-                <div className="flex items-center justify-between p-3 bg-neutral-950 rounded-xl border border-neutral-800">
-                  <span className="font-semibold text-neutral-300">bKash Merchant PGW v1.2.0-beta:</span>
-                  <span className="text-emerald-400 font-bold flex items-center gap-1">
-                    <CheckCircle className="w-4 h-4" /> টোকেনাইজড চেকআউট ইঞ্জিন সংযুক্ত
+                <div className="flex items-center justify-between p-2.5 sm:p-3 bg-neutral-950 rounded-xl border border-neutral-800 gap-2">
+                  <span className="font-semibold text-neutral-300">bKash Merchant PGW:</span>
+                  <span className="text-emerald-400 font-bold flex items-center gap-1 text-[11px] sm:text-xs shrink-0">
+                    <CheckCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> টোকেনাইজড ইঞ্জিন সংযুক্ত
                   </span>
                 </div>
-                <div className="flex items-center justify-between p-3 bg-neutral-950 rounded-xl border border-neutral-800">
-                  <span className="font-semibold text-neutral-300">অগ্রিম পেমেন্ট ৩০% ছাড় ভেরিফিকেশন:</span>
-                  <span className="text-emerald-400 font-bold flex items-center gap-1">
-                    <CheckCircle className="w-4 h-4" /> সার্ভার-সাইড ভ্যালিডেশন নিশ্চিত
+                <div className="flex items-center justify-between p-2.5 sm:p-3 bg-neutral-950 rounded-xl border border-neutral-800 gap-2">
+                  <span className="font-semibold text-neutral-300">অগ্রিম ৩০% ছাড় ভ্যালিডেশন:</span>
+                  <span className="text-emerald-400 font-bold flex items-center gap-1 text-[11px] sm:text-xs shrink-0">
+                    <CheckCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> সার্ভার-সাইড নিশ্চিত
                   </span>
                 </div>
               </div>
@@ -852,44 +989,50 @@ export default function AdminClient() {
 
         {/* Order Details Modal */}
         {selectedOrder && (
-          <div className="fixed inset-0 bg-black/80 backdrop-blur-xs flex items-center justify-center p-4 z-50">
-            <div className="bg-neutral-900 border border-neutral-800 rounded-3xl max-w-xl w-full p-6 max-h-[90vh] overflow-y-auto">
-              <div className="flex items-center justify-between pb-4 border-b border-neutral-800 mb-4">
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 z-50">
+            <div className="bg-neutral-900 border border-neutral-800 rounded-2xl sm:rounded-3xl max-w-xl w-full p-4 sm:p-6 max-h-[90vh] overflow-y-auto shadow-2xl">
+              <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-neutral-800 mb-3 sm:mb-4">
                 <div>
-                  <h3 className="font-bold text-lg text-white">অর্ডার বিবরণী</h3>
+                  <h3 className="font-bold text-base sm:text-lg text-white">অর্ডার বিবরণী</h3>
                   <span className="font-mono text-xs text-amber-400">{selectedOrder.orderNumber}</span>
                 </div>
                 <button
                   onClick={() => setSelectedOrder(null)}
-                  className="p-1.5 text-neutral-400 hover:text-white rounded-lg transition"
+                  className="p-1.5 text-neutral-400 hover:text-white rounded-lg transition cursor-pointer"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
               {/* Order Info */}
-              <div className="space-y-4 text-xs">
-                <div className="bg-neutral-950 p-4 rounded-xl border border-neutral-800">
-                  <p className="text-neutral-400 mb-1">কাস্টমার তথ্য:</p>
+              <div className="space-y-3 sm:space-y-4 text-xs">
+                <div className="bg-neutral-950 p-3 sm:p-4 rounded-xl border border-neutral-800">
+                  <p className="text-neutral-400 text-[11px] mb-1">কাস্টমার তথ্য:</p>
                   <p className="text-sm font-semibold text-white">{selectedOrder.customerName}</p>
-                  <p className="font-mono text-neutral-300">{selectedOrder.customerPhone}</p>
+                  <a
+                    href={`tel:${selectedOrder.customerPhone}`}
+                    className="font-mono text-amber-400 hover:underline inline-flex items-center gap-1 mt-0.5"
+                  >
+                    <Phone className="w-3 h-3" />
+                    <span>{selectedOrder.customerPhone}</span>
+                  </a>
                   <p className="text-neutral-300 mt-1">{selectedOrder.deliveryAddress}, {selectedOrder.district}</p>
                   {selectedOrder.notes && (
                     <p className="text-amber-200 mt-1 italic">নোট: {selectedOrder.notes}</p>
                   )}
                 </div>
 
-                <div className="bg-neutral-950 p-4 rounded-xl border border-neutral-800">
-                  <p className="text-neutral-400 mb-1">কাস্টমাইজড প্লেটের লেখা:</p>
+                <div className="bg-neutral-950 p-3 sm:p-4 rounded-xl border border-neutral-800">
+                  <p className="text-neutral-400 text-[11px] mb-1">কাস্টমাইজড প্লেটের লেখা:</p>
                   <p className="text-base font-bold text-amber-400 font-mono">
                     {selectedOrder.items[0]?.customDetails.fullPlateText}
                   </p>
-                  <p className="text-neutral-400 mt-1">
+                  <p className="text-neutral-400 mt-1 text-[11px]">
                     প্যাকেজ: {selectedOrder.items[0]?.name}
                   </p>
                 </div>
 
-                <div className="bg-neutral-950 p-4 rounded-xl border border-neutral-800 space-y-2">
+                <div className="bg-neutral-950 p-3 sm:p-4 rounded-xl border border-neutral-800 space-y-2">
                   <div className="flex justify-between">
                     <span className="text-neutral-400">মূল প্রোডাক্ট মূল্য:</span>
                     <span className="font-mono text-white">৳ {selectedOrder.originalSubtotal}</span>
@@ -919,16 +1062,16 @@ export default function AdminClient() {
                 </div>
 
                 {selectedOrder.bkashTrxId && (
-                  <div className="bg-pink-950/30 border border-pink-900/40 p-3 rounded-xl text-pink-300 font-mono">
+                  <div className="bg-pink-950/30 border border-pink-900/40 p-3 rounded-xl text-pink-300 font-mono text-[11px] sm:text-xs">
                     bKash TrxID: {selectedOrder.bkashTrxId}
                   </div>
                 )}
               </div>
 
-              <div className="mt-6 flex justify-end gap-2">
+              <div className="mt-5 sm:mt-6 flex justify-end gap-2">
                 <button
                   onClick={() => setSelectedOrder(null)}
-                  className="px-4 py-2 bg-neutral-800 hover:bg-neutral-700 text-neutral-300 rounded-xl text-xs font-semibold transition"
+                  className="px-4 py-2 bg-neutral-800 hover:bg-neutral-700 text-neutral-300 rounded-xl text-xs font-semibold transition cursor-pointer"
                 >
                   বন্ধ করুন
                 </button>
